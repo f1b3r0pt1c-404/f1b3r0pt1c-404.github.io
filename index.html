@@ -1,441 +1,1196 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="Marko Moguljak" />
-    <title>Laundry Room · Mercury Hotel</title>
-    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <!-- <header class="site-header sticky-top py-1">
-      <nav
-        class="container d-flex flex-column flex-md-row justify-content-between"
-      >
-        <a class="py-2" href="#" aria-label="Product">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="d-block mx-auto"
-            role="img"
-            viewBox="0 0 24 24"
-          >
-            <title>Product</title>
-            <circle cx="12" cy="12" r="10" />
-            <path
-              d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"
-            />
-          </svg>
-        </a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Tour</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Product</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Features</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Enterprise</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Support</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Pricing</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Cart</a>
+<head>
+  <meta charset="UTF-8" />
+  <title>Goran Midorovic | Cyberpunk Cloud & Systems Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cyberpunk-themed resume of Goran Midorovic – System Engineer specializing in AWS, Terraform, Linux, DevOps, and secure, scalable cloud infrastructure." />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #050816;
+      --accent: #00f5ff;
+      --accent-2: #ff007f;
+      --accent-3: #facc15;
+      --accent-soft: rgba(0, 245, 255, 0.18);
+      --accent-strong: #22ffc6;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.3);
+      --card-radius: 18px;
+      --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Roboto", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 50%, #000 100%);
+      color: var(--text-main);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* CYBERPUNK BACKGROUND + ANIMATED GRID + HOLOGRAM EFFECT */
+
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: #030712;
+      overflow: hidden;
+    }
+
+    /* 1. CYBERPUNK WALLPAPER */
+    .page-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("hacker-wallpaper.jpg"); /* put your image here */
+      background-size: cover;
+      background-position: center;
+      opacity: 0.22;
+      filter: saturate(1.4) contrast(1.1) blur(1px);
+      z-index: -3;
+    }
+
+    /* 2. NEON GRID LINES (ANIMATED) */
+    .page-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0, 255, 255, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.14) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 22s linear infinite;
+      z-index: -2;
+      mix-blend-mode: overlay;
+      opacity: 0.25;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-60px); }
+    }
+
+    /* 3. HOLOGRAPHIC NEON GLOW OVERLAY */
+    .cyber-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.22), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.22), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(255, 255, 0, 0.18), transparent 55%);
+      filter: blur(80px);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: holoShift 16s ease-in-out infinite alternate;
+    }
+
+    @keyframes holoShift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -30px) scale(1.15); }
+    }
+
+    /* CRT SCANLINE OVERLAY */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.06) 0,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.16;
+      animation: scanFlicker 3s infinite steps(1, end);
+    }
+
+    @keyframes scanFlicker {
+      0%, 96%, 100% { opacity: 0.16; }
+      97% { opacity: 0.25; }
+      98% { opacity: 0.05; }
+      99% { opacity: 0.2; }
+    }
+
+    /* LAYOUT */
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(2, 6, 23, 0.96),
+        rgba(2, 6, 23, 0.78),
+        transparent
+      );
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      box-shadow:
+        0 0 8px var(--accent-2),
+        0 0 18px rgba(236, 72, 153, 0.7);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      font-size: 0.86rem;
+    }
+
+    nav a {
+      position: relative;
+      color: var(--text-muted);
+      padding-bottom: 3px;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.2s ease-out;
+      border-radius: 999px;
+    }
+
+    nav a:hover {
+      color: var(--text-main);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* HERO */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
+      gap: 32px;
+      padding-top: 40px;
+      padding-bottom: 36px;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        position: static;
+      }
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent-strong);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.18);
+      border: 1px solid rgba(34, 197, 194, 0.5);
+    }
+
+    .hero-eyebrow span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+      box-shadow: 0 0 10px var(--accent-strong);
+    }
+
+    .glitch-title {
+      font-size: clamp(2.4rem, 4.4vw, 3rem);
+      margin-top: 14px;
+      margin-bottom: 10px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .glitch-title span {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      max-width: 34rem;
+    }
+
+    .typing-line {
+      margin-top: 8px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      margin-left: 4px;
+      animation: cursorBlink 0.8s steps(2, start) infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin-top: 18px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: radial-gradient(circle at top left, #172554, transparent 55%);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+        background 0.12s ease-out, border-color 0.12s ease-out, filter 0.12s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at top, var(--accent), #0ea5e9);
+      border-color: rgba(45, 212, 191, 0.9);
+      color: #020617;
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 45px rgba(56, 189, 248, 0.6);
+      filter: brightness(1.08);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: var(--border-subtle);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
+    }
+
+    .hero-card {
+      border-radius: 24px;
+      background: radial-gradient(circle at top, #020617, #020617 30%, #000 100%);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      opacity: 0.20;
+      background:
+        radial-gradient(circle at 15% 0, rgba(56, 189, 248, 0.6), transparent 55%),
+        radial-gradient(circle at 85% 100%, rgba(236, 72, 153, 0.6), transparent 60%);
+      mix-blend-mode: screen;
+      z-index: -1;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.7);
+      background: rgba(22, 163, 74, 0.2);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #bbf7d0;
+    }
+
+    .status-pill span {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .hero-card-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .hero-card-main {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .hero-card-main strong {
+      color: var(--accent);
+    }
+
+    .hero-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.78rem;
+    }
+
+    .hero-chip {
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .hero-chip span {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .hero-footnote {
+      margin-top: 12px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    .hero-footnote code {
+      font-size: 0.72rem;
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    /* SECTIONS */
+
+    section {
+      margin-top: 18px;
+      padding: 22px 18px 20px;
+      border-radius: var(--card-radius);
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.12), transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.12), transparent 55%);
+      opacity: 0.8;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    section + section {
+      margin-top: 16px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title span.badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+    }
+
+    .section-title::before {
+      content: "";
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    /* GLITCHING TITLES */
+
+    .glitch-title,
+    .glitch-heading {
+      position: relative;
+      overflow: visible;
+    }
+
+    .glitch-title::before,
+    .glitch-title::after,
+    .glitch-heading::before,
+    .glitch-heading::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .glitch-title::before,
+    .glitch-heading::before {
+      text-shadow: -2px 0 rgba(0, 255, 255, 0.9);
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 60%);
+      animation: glitchShift1 2.2s infinite linear alternate-reverse;
+    }
+
+    .glitch-title::after,
+    .glitch-heading::after {
+      text-shadow: 2px 0 rgba(255, 0, 128, 0.9);
+      clip-path: polygon(0 40%, 100% 30%, 100% 100%, 0 100%);
+      animation: glitchShift2 1.8s infinite linear alternate;
+    }
+
+    @keyframes glitchShift1 {
+      0%   { transform: translate(0, 0); }
+      15%  { transform: translate(-1px, -1px); }
+      30%  { transform: translate(1px, 0); }
+      45%  { transform: translate(-2px, 1px); }
+      60%  { transform: translate(2px, -1px); }
+      75%  { transform: translate(-1px, 1px); }
+      100% { transform: translate(0.5px, 0); }
+    }
+
+    @keyframes glitchShift2 {
+      0%   { transform: translate(0, 0); }
+      20%  { transform: translate(1px, 1px); }
+      40%  { transform: translate(-1px, 0); }
+      55%  { transform: translate(2px, -1px); }
+      70%  { transform: translate(-2px, 1px); }
+      85%  { transform: translate(1px, -1px); }
+      100% { transform: translate(-0.5px, 0); }
+    }
+
+    /* SKILLS */
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      font-size: 0.86rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .skill-card {
+      padding: 10px 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(30, 64, 175, 0.9);
+      background: radial-gradient(circle at top, #020617, #020617 55%, #020617);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(0, 255, 255, 0.08),
+        transparent,
+        rgba(236, 72, 153, 0.08)
+      );
+      opacity: 0;
+      mix-blend-mode: screen;
+      transition: opacity 0.15s ease-out;
+      pointer-events: none;
+    }
+
+    .skill-card:hover::after {
+      opacity: 1;
+    }
+
+    .skill-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .skill-items {
+      font-size: 0.84rem;
+      color: var(--text-main);
+    }
+
+    .skill-items span {
+      color: var(--text-muted);
+    }
+
+    /* EXPERIENCE */
+
+    .timeline {
+      border-left: 1px dashed rgba(148, 163, 184, 0.7);
+      margin-left: 4px;
+      padding-left: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 0.86rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 4px;
+    }
+
+    .timeline-bullet {
+      position: absolute;
+      left: -15px;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent);
+    }
+
+    .timeline-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px 8px;
+      margin-bottom: 2px;
+    }
+
+    .role {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .company {
+      color: var(--accent);
+      font-size: 0.86rem;
+    }
+
+    .dates {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    .timeline-body {
+      margin-top: 3px;
+      color: var(--text-muted);
+    }
+
+    .timeline-body ul {
+      margin-top: 6px;
+      padding-left: 18px;
+    }
+
+    .timeline-body li {
+      margin-bottom: 3px;
+    }
+
+    /* CERTIFICATIONS */
+
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      font-size: 0.84rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cert-card {
+      border-radius: 14px;
+      border: 1px solid rgba(52, 211, 153, 0.7);
+      padding: 9px 10px;
+      background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.18), #020617);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cert-name {
+      font-weight: 500;
+    }
+
+    .cert-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    /* CONTACT + FOOTER */
+
+    #contact .pill {
+      background: rgba(15, 23, 42, 0.92);
+    }
+
+    footer {
+      margin-top: 22px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg"></div>
+  <div class="cyber-overlay"></div>
+  <div class="scanlines"></div>
+
+  <header>
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <span class="nav-dot"></span>
+        <span>GORAN MIDOROVIC // SYSENG</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#certifications">Certs</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
       </nav>
-    </header> -->
+    </div>
+  </header>
 
-    <main>
-      <div class="hero position-relative">
-        <div class="row mx-auto container px-4">
-          <div class="col-lg-6 py-3 my-5 text-lg-start text-center">
-            <div
-              class="headline-wrapper d-flex flex-column justify-content-between h-100"
-            >
-              <div class="headline">
-                <div class="pt-3"></div>
-                <h1 class="fw-bold text-uppercase">Laundry Room</h1>
-                <h2 class="fw-bold text-uppercase">Mercury Hotel</h2>
-                <h4 class="fw-light text-uppercase">Business Proposal</h4>
-              </div>
-              <div class="headline-info">
-                <p class="m-0 fw-bold">Mercury Hotel</p>
-                <p class="m-0">100 Collins Ave</p>
-                <p class="m-0">Miami Beach , FL33139</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <img
-              class="img-fluid img-round img-round-border"
-              src="assets/img/hotel-mercury.jpg"
-              alt="Hotel Mercury"
-            />
-          </div>
+  <main class="wrapper">
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="dot"></span> System Engineer · Cloud · DevOps
         </div>
-        <div class="header-gradient d-none d-lg-block"></div>
-      </div>
 
-      <div class="content container px-4">
-        <div class="summary row">
-          <div class="col-lg-7 mx-auto my-5 text-center overflow-hidden">
-            <div class="py-3">
-              <h3 class="display-5 fw-bold">Executive Summary</h3>
-              <p class="lead">
-                This proposal offers the opportunity to purchase a profitable
-                and well-established laundry room business located in the
-                Mercury Hotel - All Suites, in the heart of South Beach, Miami
-                Beach, Florida. The business serves hotel guests and local
-                residents, is primed for continued profitability and room for
-                growth, providing convenient laundry services with minimal
-                operational costs and stable weekly profits. The nearby beach
-                and hotel bar offer additional amenities to enhance customer
-                experience
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 my-lg-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">Business Overview</h3>
-              <ul>
-                <li>Business Name: Mercury Hotel Laundry Room</li>
-                <li>
-                  Location: Mercury Hotel - All Suites, South Beach, Miami
-                  Beach, Florida
-                </li>
-                <li>
-                  Services Offered: Self-service laundry for both hotel guests
-                  and local residents.
-                </li>
-                <li>
-                  History: Successfully operating for several years, this
-                  business is integrated with the hotel. Serving conveniently
-                  customers from it and surrounding areas, this laundry room has
-                  built a reliable and growing customer base as a solution to
-                  needs.
-                </li>
-                <li>Ownership Structure: Currently owner-operated.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp mx-auto img-comp-right img-comp-purple-blue  d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-07.jpg"
-                alt="laundry-07"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
+        <h1 class="glitch-title" data-text="Goran Midorovic">
+          Goran <span>Midorovic</span>
+        </h1>
 
-        <div class="row flex-lg-row-reverse">
-          <div class="col-lg-6 my-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">Financial Overview</h3>
-              <ul>
-                <li>
-                  Revenue: Weekly profits range from a minimum of $500, with
-                  potential for more depending on seasonal demand and marketing
-                  efforts.
-                </li>
-                <li>
-                  Operating Costs: Rent is $100 per month, with other costs
-                  primarily related to utilities and equipment maintenance.
-                </li>
-                <li>
-                  Assets:
-                  <ul class="sublist">
-                    <li>3 washing machines</li>
-                    <li>3 dryer machines</li>
-                    <li>
-                      1 vending machine for laundry products (Payment Systems:
-                      Accepts both card and payments.)
-                    </li>
-                  </ul>
-                </li>
-                <li>Liabilities: No significant outstanding debts.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp img-comp-left img-comp-green-blue mx-auto  d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-08.jpg"
-                alt="laundry-08"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
+        <p class="hero-subtitle">
+          Highly experienced System Engineer with 10+ years in AWS infrastructure, Terraform automation,
+          and Linux systems. I design cost-efficient, secure, and scalable cloud platforms, lead DevOps teams,
+          and deliver SOC2-compliant architectures aligned with business goals.
+        </p>
 
-        <div class="row">
-          <div class="col-lg-6 my-lg-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">
-                Customer and Market Overview
-              </h3>
-              <ul>
-                <li>
-                  Target Customers: Primarily hotel guests and local residents.
-                </li>
-                <li>
-                  Contract: The business operates under a 10-year contract with
-                  the Mercury Hotel, ensuring consistent foot traffic and
-                  revenue.
-                </li>
-                <li>
-                  Additional Amenities: Customers can enjoy the hotel’s
-                  first-floor bar while waiting, or take advantage of the nearby
-                  beach, located just a few blocks away, adding to the customer
-                  experience.
-                </li>
-                <li>
-                  Market Potential: This location benefits from high foot
-                  traffic due to tourism and local demand, offering significant
-                  growth opportunities.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp mx-auto img-comp-right img-comp-purple-blue d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-09.jpg"
-                alt="laundry-09"
-              />
-            </div>
-          </div>
+        <div class="typing-line">
+          <span id="typing-text"></span><span class="typing-cursor">▌</span>
         </div>
-        <!-- /.row -->
 
-        <div class="row flex-lg-row-reverse">
-          <div class="col-lg-6 my-lg-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">Operations Overview</h3>
-              <ul>
-                <li>
-                  Day-to-day Operations: Self-service laundry facility,
-                  accessible 7 days a week, 24 hours.
-                </li>
-                <li>
-                  Staffing: No staff required for daily operations, minimizing
-                  overhead costs.
-                </li>
-                <li>
-                  Equipment Condition: The washers, dryers, and vending machine
-                  are in good condition, with no immediate need for replacement
-                  or repair. (Information for service if needed will be
-                  provided)
-                </li>
-                <li>Liabilities: No significant outstanding debts.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp img-comp-left img-comp-pink-blue mx-auto d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-10.jpg"
-                alt="laundry-10"
-              />
-            </div>
-          </div>
+        <div class="hero-meta">
+          <span>📍 Miami, Florida, USA</span>
+          <span>📧 <a href="mailto:goran.midorovic@yahoo.com">goran.midorovic@yahoo.com</a></span>
+          <span>📞 <a href="tel:+17863279001">+1 (786) 327 9001</a></span>
         </div>
-        <!-- /.row -->
 
-        <div class="row">
-          <div class="col-lg-6 my-lg-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">Growth Potential</h3>
-              <ul>
-                <li>
-                  Expansion Opportunities: Increase marketing efforts targeting
-                  local residents, or establish partnerships with nearby
-                  businesses or hotels to expand the customer base.
-                </li>
-                <li>
-                  Service Expansion: Explore offering additional services such
-                  as pick-up and delivery, dry cleaning partnerships, or
-                  additional vending options in order to increase sales.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp mx-auto img-comp-right img-comp-purple-blue d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-11.jpg"
-                alt="laundry-11"
-              />
-            </div>
-          </div>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">
+            <span class="btn-icon">✉️</span> INITIATE CONTACT
+          </a>
+          <a href="#experience" class="btn-ghost">
+            <span class="btn-icon">▶</span> VIEW LOGS
+          </a>
         </div>
-        <!-- /.row -->
-        <div class="row flex-lg-row-reverse">
-          <div class="col-lg-6 my-lg-5">
-            <div class="my-3 py-3">
-              <h3 class="display-6 fw-bold mb-3">Reason for Selling</h3>
-              <ul>
-                <li>
-                  The current owner is seeking to sell due to personal reasons,
-                  providing an incoming owner with a profitable and established
-                  business that requires minimal hands-on management.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-6 my-lg-5">
-            <div class="img-comp img-comp-left img-comp-green-blue mx-auto d-none d-lg-block">
-              <img
-                class="img-fluid"
-                src="assets/img/laundry-12.jpg"
-                alt="laundry-12"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.content -->
 
-      <!-- Gallery -->
-      <div class="container py-5 px-4">
-        <h3 class="display-6 fw-bold mb-3">Gallery</h3>
-        <div class="row justify-content-center">
-          <div class="col-lg-12">
-            <div class="row justify-content-center">
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="0" src="assets/img/laundry-01.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="1" src="assets/img/laundry-02.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="2" src="assets/img/laundry-03.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="3" src="assets/img/laundry-04.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="4" src="assets/img/laundry-05.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="5" src="assets/img/laundry-06.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="6" src="assets/img/laundry-07.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="7" src="assets/img/laundry-08.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="8" src="assets/img/laundry-09.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="9" src="assets/img/laundry-10.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="10" src="assets/img/laundry-11.jpg" class="img-fluid">
-              </a>
-              <a href="#" class="col-md-3 mb-4 gallery-img" data-bs-toggle="modal" data-bs-target="#exampleLightbox">
-                <img data-bs-target="#lightboxExampleCarousel" data-bs-slide-to="11" src="assets/img/laundry-12.jpg" class="img-fluid">
-              </a>
-            </div>
+        <div class="hero-meta" style="margin-top: 14px;">
+          <div class="pill">
+            <span class="pill-dot"></span> Seeking senior leadership role in Cybersecurity architectures  (US market)
           </div>
         </div>
       </div>
-      
-      <div class="modal fade" id="exampleLightbox" tabindex="-1" aria-labelledby="exampleLightboxLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-body">
-              <div id="lightboxExampleCarousel" class="carousel slide">
-                <div class="carousel-inner ratio ratio-1x1 bg-dark">
-                  <div class="carousel-item text-center active">
-                    <img src="assets/img/laundry-01.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-02.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-03.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-04.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-05.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-06.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-07.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-08.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-09.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-10.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-11.jpg" class="img-fluid mh-100">
-                  </div>
-                  <div class="carousel-item text-center">
-                    <img src="assets/img/laundry-12.jpg" class="img-fluid mh-100">
-                  </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#lightboxExampleCarousel" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#lightboxExampleCarousel" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-              </div>
-            </div>
+
+      <aside class="hero-card" aria-label="Profile summary">
+        <div class="hero-card-header">
+          <div>PROFILE SNAPSHOT</div>
+          <div class="status-pill">
+            <span></span> ONLINE
+          </div>
+        </div>
+        <div class="hero-card-title">CURRENT ROLE</div>
+        <div class="hero-card-main">
+          Lead System Engineer at <strong>Royal Caribbean International</strong><br />
+          Leading a team of 6 engineers, delivering secure, high-availability AWS platforms and
+          microservice architectures.
+        </div>
+
+        <div class="hero-card-grid">
+          <div class="hero-chip">
+            <span></span> 10+ yrs infra & ops
+          </div>
+          <div class="hero-chip">
+            <span></span> AWS · Terraform · SOC2
+          </div>
+          <div class="hero-chip">
+            <span></span> Linux · Docker · K8s
+          </div>
+          <div class="hero-chip">
+            <span></span> Team leadership & mentoring
+          </div>
+        </div>
+
+        <div class="hero-footnote">
+          <span>// Latest impact: 50% faster deployments & 40% better scalability via microservices migration</span>
+          <code>sudo apply --infra --secure --scale</code>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <h2 class="section-title glitch-heading" data-text="Core Technical Stack">
+        <span class="badge">Skills</span> Core Technical Stack
+      </h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-label">Cloud & Infrastructure</div>
+          <div class="skill-items">
+            AWS (EC2, VPC, ECS, ECR, CloudFront, CloudWatch, Athena, RDS, IAM, Systems Manager, Lambda,
+            CloudTrail, Secrets Manager, S3, WAF & Shield), Terraform, CDK, Infrastructure as Code
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-label">Operating Systems</div>
+          <div class="skill-items">
+            <span>Linux:</span> RHEL, Ubuntu, CentOS<br />
+            <span>Windows:</span> Windows Server
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-label">CI/CD & DevOps</div>
+          <div class="skill-items">
+            Git, GitHub Actions, Jenkins<br />
+            Process automation & high-availability architectures
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-label">Containers & Orchestration</div>
+          <div class="skill-items">
+            Docker, Kubernetes, OpenShift, LXC
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-label">Scripting & Databases</div>
+          <div class="skill-items">
+            Bash, Python · PostgreSQL, MySQL · Administration, backups, clustering
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-label">Security & Leadership</div>
+          <div class="skill-items">
+            AWS Security (IAM, Secrets Manager, WAF & Shield), SOC2 Compliance<br />
+            Team leadership, mentorship, stakeholder management, cross-department collaboration
           </div>
         </div>
       </div>
-      <!-- Gallery -->
-      <!-- Form -->
-       <div class="container py-5">
-        <h3 class="display-6 fw-bold mb-3">Contact form</h3>
-        <div class="row">
-          <div class="col-md-7">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf7gOJOcYvDyebMQD2AU2nAgphe2nepZW4mZtH4Yb30Q_DHmQ/viewform?embedded=true" width="640" height="1100" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-          </div>
-          <div class="col-md-5 d-none d-md-block">
-            <div class="form-img-wrapper">
-              <div class="form-img">
-                <div class="form-img-overlay"></div>
-                <img src="assets/img/email.svg" alt="email">
-              </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <h2 class="section-title glitch-heading" data-text="Operational History">
+        <span class="badge">Experience</span> Operational History
+      </h2>
+      <div class="timeline">
+        <article class="timeline-item">
+          <div class="timeline-bullet"></div>
+          <div class="timeline-header">
+            <div>
+              <div class="role">Lead System Engineer</div>
+              <div class="company">Royal Caribbean International</div>
             </div>
+            <div class="dates">Jan 2025 – Present</div>
+          </div>
+          <div class="timeline-body">
+            <ul>
+              <li>Lead a team of 6 System Engineers, driving innovation and continuous improvement in product operations.</li>
+              <li>Design and implement scalable, highly available AWS architectures with strong fault tolerance.</li>
+              <li>Advocate Terraform-based IaC, reducing manual interventions by ~80% and improving reliability.</li>
+              <li>Deliver high-stakes cloud projects on time and within budget, saving 200k+ USD annually.</li>
+              <li>Improve cross-department collaboration, increasing project delivery efficiency by 20%.</li>
+              <li>Drive major microservices migration, cutting deployment times by 50% and boosting scalability by 40%.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-bullet"></div>
+          <div class="timeline-header">
+            <div>
+              <div class="role">Network Administrator</div>
+              <div class="company">FAENA Hotel</div>
+            </div>
+            <div class="dates">Apr 2024 – Dec 2024</div>
+          </div>
+          <div class="timeline-body">
+            <ul>
+              <li>Managed hotel IT infrastructure and network connectivity for guests and staff in a hospitality environment.</li>
+              <li>Implemented and maintained property management systems to optimize IT workflows.</li>
+              <li>Led transition to a new network infrastructure, improving reliability and security.</li>
+              <li>Prioritized firewall configuration and data protection, monitoring security events and responding to incidents.</li>
+              <li>Utilized SIEM tools, network protocols, and ITSM frameworks for high-quality technical service.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-bullet"></div>
+          <div class="timeline-header">
+            <div>
+              <div class="role">Senior Network Engineer</div>
+              <div class="company">Evoskin LLC</div>
+            </div>
+            <div class="dates">Apr 2020 – May 2023</div>
+          </div>
+          <div class="timeline-body">
+            <ul>
+              <li>Implemented optimal network performance across multiple medical offices.</li>
+              <li>Managed Active Directory, assigning and enforcing endpoint security policies.</li>
+              <li>Used penetration testing tools to identify and remediate security weaknesses.</li>
+              <li>Configured and troubleshot routers, switches, firewalls, and wireless across multi-vendor platforms (Cisco, Juniper).</li>
+              <li>Designed and maintained complex network architectures for high availability and scalability.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-bullet"></div>
+          <div class="timeline-header">
+            <div>
+              <div class="role">Linux Network Administrator</div>
+              <div class="company">Zealous Management LLC</div>
+            </div>
+            <div class="dates">Jun 2018 – Jan 2020</div>
+          </div>
+          <div class="timeline-body">
+            <ul>
+              <li>Configured network equipment for installations and lifecycle refreshes.</li>
+              <li>Executed post-installation testing for turnkey services.</li>
+              <li>Secured network systems via access control policies and best practices.</li>
+              <li>Used security testing and penetration tools to find and patch vulnerabilities.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section id="certifications">
+      <h2 class="section-title glitch-heading" data-text="Cloud & DevOps Credentials">
+        <span class="badge">Certifications</span> Cloud & DevOps Credentials
+      </h2>
+      <div class="cert-grid">
+        <div class="cert-card">
+          <div class="cert-name">Red Hat Certified System Administrator</div>
+          <div class="cert-meta">
+            <span>Red Hat</span><span>Aug 2025</span>
           </div>
         </div>
-       </div>
 
-      <!-- Form -->
-    </main>
-    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="js/scripts.js"></script>
-  </body>
+        <div class="cert-card">
+          <div class="cert-name">Google Practitioner / Digital Leader</div>
+          <div class="cert-meta">
+            <span>Google</span><span>May 2025</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">AWS Cloud Technology Consultant</div>
+          <div class="cert-meta">
+            <span>AWS</span><span>Oct 2024</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">Cloud-Native Development with OpenShift & Kubernetes</div>
+          <div class="cert-meta">
+            <span>Red Hat</span><span>Jul 2024</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">AWS Cloud Solutions Architect Specialization</div>
+          <div class="cert-meta">
+            <span>AWS</span><span>Apr 2024</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">DevOps on AWS Specialization</div>
+          <div class="cert-meta">
+            <span>AWS</span><span>Nov 2021</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">Building Containerized Applications on AWS</div>
+          <div class="cert-meta">
+            <span>AWS</span><span>Mar 2021</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">Certified Terraform Associate</div>
+          <div class="cert-meta">
+            <span>HashiCorp</span><span>Jun 2020</span>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-name">Architecting with Google Compute Engine</div>
+          <div class="cert-meta">
+            <span>Google Cloud</span><span>Apr 2020</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <h2 class="section-title glitch-heading" data-text="Open a Secure Channel">
+        <span class="badge">Contact</span> Open a Secure Channel
+      </h2>
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px; position:relative; z-index:1;">
+        To discuss senior cloud, systems engineering, or DevOps leadership roles, open a channel:
+      </p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; font-size:0.9rem; position:relative; z-index:1;">
+        <div class="pill">
+          📧 <a href="mailto:goran.midorovic@yahoo.com">goran.midorovic@yahoo.com</a>
+        </div>
+        <div class="pill">
+          📞 <a href="tel:+17863279001">+1 (786) 327 9001</a>
+        </div>
+        <!-- You can add LinkedIn / GitHub later -->
+        <!-- <div class="pill">💼 <a href="#">LinkedIn</a></div> -->
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="year"></span> Goran Midorovic · Cloud & Systems Engineer</span>
+      <div class="footer-links">
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Set current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Typing effect
+    const typingEl = document.getElementById("typing-text");
+    const phrases = [
+      "Initializing cloud infrastructure... OK",
+      "AWS · Terraform · Linux · Kubernetes",
+      "Security mode: SOC2-compliant · hardened perimeter",
+      "Automating everything with IaC & DevOps pipelines"
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function typeLoop() {
+      if (!typingEl) return;
+
+      const current = phrases[phraseIndex];
+      const visible = current.substring(0, charIndex);
+      typingEl.textContent = visible;
+
+      if (!deleting && charIndex < current.length) {
+        charIndex++;
+        setTimeout(typeLoop, 70);
+      } else if (!deleting && charIndex === current.length) {
+        deleting = true;
+        setTimeout(typeLoop, 1200);
+      } else if (deleting && charIndex > 0) {
+        charIndex--;
+        setTimeout(typeLoop, 40);
+      } else if (deleting && charIndex === 0) {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(typeLoop, 300);
+      }
+    }
+
+    typeLoop();
+  </script>
+</body>
 </html>
+
