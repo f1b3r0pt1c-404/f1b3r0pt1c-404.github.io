@@ -62,7 +62,6 @@
       background-size: cover;
       background-position: center;
       opacity: 0.22;
-      filter: saturate(1.4) contrast(1.1) blur(1px);
       z-index: -3;
     }
 
@@ -77,8 +76,8 @@
       background-size: 60px 60px;
       animation: gridMove 22s linear infinite;
       z-index: -2;
-      mix-blend-mode: overlay;
-      opacity: 0.25;
+      opacity: 0.12;
+      will-change: transform;
     }
 
     @keyframes gridMove {
@@ -95,9 +94,9 @@
         radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.22), transparent 55%),
         radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.22), transparent 55%),
         radial-gradient(circle at 50% 100%, rgba(255, 255, 0, 0.18), transparent 55%);
-      filter: blur(80px);
       pointer-events: none;
-      mix-blend-mode: screen;
+      opacity: 0.6;
+      will-change: transform;
       animation: holoShift 16s ease-in-out infinite alternate;
     }
 
@@ -151,9 +150,7 @@
         transparent 1px,
         transparent 3px
       );
-      mix-blend-mode: soft-light;
-      opacity: 0.16;
-      animation: scanFlicker 3s infinite steps(1, end);
+      opacity: 0.1;
     }
 
     @keyframes scanFlicker {
@@ -175,7 +172,6 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      backdrop-filter: blur(18px);
       background: linear-gradient(
         to bottom,
         rgba(2, 6, 23, 0.96),
@@ -618,13 +614,26 @@
     .glitch-heading::before {
       text-shadow: -2px 0 rgba(0, 255, 255, 0.9);
       clip-path: polygon(0 0, 100% 0, 100% 45%, 0 60%);
-      animation: glitchShift1 2.2s infinite linear alternate-reverse;
     }
 
     .glitch-title::after,
     .glitch-heading::after {
       text-shadow: 2px 0 rgba(255, 0, 128, 0.9);
       clip-path: polygon(0 40%, 100% 30%, 100% 100%, 0 100%);
+    }
+
+    .glitch-heading::before,
+    .glitch-heading::after { opacity: 0; }
+    .glitch-heading:hover::before,
+    .glitch-heading:hover::after { opacity: 1; }
+
+    .glitch-title::before,
+    .glitch-heading:hover::before {
+      animation: glitchShift1 2.2s infinite linear alternate-reverse;
+    }
+
+    .glitch-title::after,
+    .glitch-heading:hover::after {
       animation: glitchShift2 1.8s infinite linear alternate;
     }
 
@@ -1260,7 +1269,7 @@
     (function () {
       const canvas = document.getElementById("matrix-rain");
       if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d", { alpha: false });
       const chars = "01アイウエオカキクケコサシスセソ<>/{}[]#$%&*NERCCIP";
       const size = 16;
       let drops = [];
@@ -1283,9 +1292,27 @@
         });
       }
 
+      let last = 0;
+      let visible = true;
+      const hero = document.querySelector(".hero");
+      if (hero && "IntersectionObserver" in window) {
+        new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
+      }
+
+      function loop(t) {
+        requestAnimationFrame(loop);
+        if (!visible || document.hidden || t - last < 66) return;
+        last = t;
+        draw();
+      }
+
       resize();
-      window.addEventListener("resize", resize);
-      setInterval(draw, 50);
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 200);
+      });
+      requestAnimationFrame(loop);
     })();
   </script>
 </body>
