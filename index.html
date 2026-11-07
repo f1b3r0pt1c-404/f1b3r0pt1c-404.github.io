@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Goran Midorovic | Cybersecurity & Systems Engineer</title>
+  <title>Goran Midorovic | Senior Cybersecurity Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Cyberpunk resume of Goran Midorovic – Cybersecurity Engineer specializing in AWS, Terraform, Linux, DevOps, and secure, scalable cloud infrastructure." />
+  <meta name="description" content="Goran Midorovic – Senior Cybersecurity Engineer at NextEra Energy. NERC CIP, critical infrastructure security, network defense, cloud security, and Linux hardening." />
   <style>
     :root {
       --bg: #020617;
@@ -105,6 +105,38 @@
       0% { transform: translate(0, 0) scale(1); }
       100% { transform: translate(30px, -30px) scale(1.15); }
     }
+
+    /* MATRIX CODE RAIN */
+    #matrix-rain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* TERMINAL PROFILE CARD */
+    .term-dots { display: flex; gap: 6px; }
+    .term-dots i {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #ff5f57; display: block;
+    }
+    .term-dots i:nth-child(2) { background: #febc2e; }
+    .term-dots i:nth-child(3) { background: #28c840; }
+    .term-body {
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      margin-top: 12px;
+      color: var(--text-main);
+      overflow-wrap: anywhere;
+    }
+    .term-prompt { color: #22ff88; margin-right: 6px; }
+    .term-out { color: var(--text-muted); padding-left: 2px; }
+    .term-out strong { color: var(--accent); }
+    .term-ok { color: #22ff88; font-weight: 700; }
 
     /* CRT SCANLINE OVERLAY */
     .scanlines {
@@ -809,6 +841,7 @@
 </head>
 <body>
   <div class="page-bg"></div>
+  <canvas id="matrix-rain" aria-hidden="true"></canvas>
   <div class="cyber-overlay"></div>
   <div class="scanlines"></div>
 
@@ -816,7 +849,7 @@
     <div class="nav-inner">
       <div class="nav-brand">
         <span class="nav-dot"></span>
-        <span>GORAN MIDOROVIC // SYSENG</span>
+        <span>GORAN MIDOROVIC // SEC_OPS</span>
       </div>
       <nav>
         <ul>
@@ -834,7 +867,7 @@
     <section class="hero">
       <div>
         <div class="hero-eyebrow">
-          <span class="dot"></span> System Engineer · Cloud · DevOps
+          <span class="dot"></span> Cybersecurity · Critical Infrastructure
         </div>
 
         <h1 class="glitch-title" data-text="Goran Midorovic">
@@ -842,9 +875,10 @@
         </h1>
 
         <p class="hero-subtitle">
-          Highly experienced System Engineer with 10+ years in AWS infrastructure, Terraform automation,
-          and Linux systems. I design cost-efficient, secure, and scalable cloud platforms, lead DevOps teams,
-          and deliver SOC2-compliant architectures aligned with business goals.
+          Senior Cybersecurity Engineer at <strong>NextEra Energy</strong>, defending critical energy
+          infrastructure in a NERC CIP–regulated environment. 10+ years across network defense, Linux
+          hardening, cloud security, and incident response — I find the weak spots, lock them down,
+          and automate the defenses.
         </p>
 
         <div class="typing-line">
@@ -862,52 +896,60 @@
             <span class="btn-icon">✉️</span> INITIATE CONTACT
           </a>
           <a href="#experience" class="btn-ghost">
-            <span class="btn-icon">▶</span> VIEW LOGS
+            <span class="btn-icon">▶</span> VIEW ACCESS LOGS
           </a>
         </div>
 
         <div class="hero-meta" style="margin-top: 14px;">
           <div class="pill">
-            <span class="pill-dot"></span> Seeking senior leadership role in Cybersecurity architectures  (US market)
+            <span class="pill-dot"></span> Clearance: NERC CIP access · Unescorted nuclear access
           </div>
         </div>
       </div>
 
-      <aside class="hero-card" aria-label="Profile summary">
+      <aside class="hero-card terminal-card" aria-label="Profile summary">
         <div class="hero-card-header">
-          <div>PROFILE SNAPSHOT</div>
+          <div class="term-dots"><i></i><i></i><i></i></div>
+          <div>root@sec-ops:~</div>
           <div class="status-pill">
-            <span></span> ONLINE
+            <span></span> SECURE
           </div>
         </div>
-        <div class="hero-card-title">CURRENT ROLE</div>
-        <div class="hero-card-main">
-          Senior Cybersecurity Engineer at <strong>NextEra Energy, Inc.</strong><br />
-          Securing critical energy infrastructure in a NERC CIP–regulated environment,
-          with NERC CIP and unescorted nuclear facility access.
+        <div class="term-body">
+          <div><span class="term-prompt">root@sec-ops:~#</span> whoami</div>
+          <div class="term-out">goran.midorovic</div>
+          <div><span class="term-prompt">root@sec-ops:~#</span> cat /etc/role</div>
+          <div class="term-out">Senior Cybersecurity Engineer @ <strong>NextEra Energy, Inc.</strong></div>
+          <div><span class="term-prompt">root@sec-ops:~#</span> ./access --status</div>
+          <div class="term-out"><span class="term-ok">[GRANTED]</span> NERC CIP access</div>
+          <div class="term-out"><span class="term-ok">[GRANTED]</span> Unescorted nuclear facility access</div>
+          <div><span class="term-prompt">root@sec-ops:~#</span> nmap -sV goran --top-skills</div>
         </div>
 
         <div class="hero-card-grid">
           <div class="hero-chip">
-            <span></span> 10+ yrs infra & ops
+            <span></span> NERC CIP compliance
           </div>
           <div class="hero-chip">
-            <span></span> AWS · Terraform · SOC2
+            <span></span> Critical infrastructure
           </div>
           <div class="hero-chip">
-            <span></span> Linux · Docker · K8s
+            <span></span> SIEM · Incident response
           </div>
           <div class="hero-chip">
-            <span></span> Team leadership & mentoring
+            <span></span> Firewalls · Network defense
           </div>
-          <div class="hero-chip" style="grid-column: 1 / -1;">
-            <span></span> Senior Cybersecurity @ NextEra · NERC CIP · Nuclear access
+          <div class="hero-chip">
+            <span></span> Pentesting · Vuln mgmt
+          </div>
+          <div class="hero-chip">
+            <span></span> AWS security · IAM · SOC2
           </div>
         </div>
 
         <div class="hero-footnote">
-          <span>// Latest impact: 50% faster deployments & 40% better scalability via microservices migration</span>
-          <code>sudo apply --infra --secure --scale</code>
+          <span>// 10+ yrs securing networks, Linux systems &amp; cloud platforms</span>
+          <code>sudo harden --infra --monitor --respond</code>
         </div>
       </aside>
     </section>
@@ -1164,7 +1206,7 @@
     </section>
 
     <footer>
-      <span>© <span id="year"></span> Goran Midorovic · Cloud & Systems Engineer</span>
+      <span>© <span id="year"></span> Goran Midorovic · Senior Cybersecurity Engineer</span>
       <div class="footer-links">
         <a href="#top">Back to top ↑</a>
       </div>
@@ -1178,10 +1220,11 @@
     // Typing effect
     const typingEl = document.getElementById("typing-text");
     const phrases = [
-      "Initializing cloud infrastructure... OK",
-      "AWS · Terraform · Linux · Kubernetes",
-      "Security mode: SOC2-compliant · hardened perimeter",
-      "Automating everything with IaC & DevOps pipelines"
+      "> establishing secure connection... OK",
+      "> scanning perimeter... 0 threats detected",
+      "> NERC CIP controls: ENFORCED",
+      "> threat hunting · incident response · hardening",
+      "> access level: CRITICAL INFRASTRUCTURE"
     ];
 
     let phraseIndex = 0;
@@ -1212,6 +1255,38 @@
     }
 
     typeLoop();
+
+    // Matrix code rain
+    (function () {
+      const canvas = document.getElementById("matrix-rain");
+      if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const ctx = canvas.getContext("2d");
+      const chars = "01アイウエオカキクケコサシスセソ<>/{}[]#$%&*NERCCIP";
+      const size = 16;
+      let drops = [];
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        drops = Array(Math.ceil(canvas.width / size)).fill(0).map(() => Math.random() * -50);
+      }
+
+      function draw() {
+        ctx.fillStyle = "rgba(2, 6, 23, 0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#22ff88";
+        ctx.font = size + "px monospace";
+        drops.forEach((y, i) => {
+          ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * size, y * size);
+          if (y * size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i] = y + 1;
+        });
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      setInterval(draw, 50);
+    })();
   </script>
 </body>
 </html>
