@@ -137,25 +137,96 @@
     .term-out strong { color: var(--accent); }
     .term-ok { color: #22ff88; font-weight: 700; }
 
-    /* ARCH BOOT SCREEN */
-    #boot {
+    /* INTRO GATE */
+    html.gate-open, html.gate-open body { overflow: hidden; }
+    #gate {
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: #000;
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
       color: #d1d5db;
-      font: 13px/1.45 "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-      padding: 18px 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: opacity 0.35s ease-out;
     }
-    #boot.done { opacity: 0; pointer-events: none; }
-    #boot .ok { color: #22c55e; }
-    #boot .arch { color: #1793d1; font-weight: 700; }
-    #boot .skip {
-      position: absolute; right: 16px; bottom: 14px;
-      color: #6b7280; font-size: 12px;
+    #gate .half {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 50.5%;
+      background: #000;
+      transition: transform 0.9s cubic-bezier(0.77, 0, 0.18, 1);
+    }
+    #gate .half.l { left: 0; }
+    #gate .half.r { right: 0; }
+    #gate .seam {
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 2px;
+      margin-left: -1px;
+      background: #22ff88;
+      box-shadow: 0 0 18px #22ff88, 0 0 40px #22ff88;
+      transform: scaleY(0);
+      transition: transform 0.35s ease-out, opacity 0.4s ease-out 0.5s;
+    }
+    #gate .stage {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px 16px;
+      transition: opacity 0.2s ease-out;
+    }
+    #gate .face {
+      margin: 0;
+      color: #22ff88;
+      font: 700 clamp(9px, 2vw, 16px)/1.15 ui-monospace, monospace;
+      text-shadow: 0 0 6px rgba(34, 255, 136, 0.55);
+      animation: faceFlicker 4s infinite steps(1, end);
+    }
+    #gate .face .eye { color: #ff2244; text-shadow: 0 0 8px #ff2244, 0 0 18px #ff2244; }
+    @keyframes faceFlicker {
+      0%, 93%, 100% { opacity: 1; transform: none; }
+      94% { opacity: 0.4; transform: translateX(3px); }
+      95% { opacity: 1; transform: translateX(-2px); }
+      96% { opacity: 0.7; transform: none; }
+    }
+    #gate .log {
+      width: min(640px, 100%);
+      font-size: clamp(12px, 1.6vw, 14px);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      min-height: 9.6em;
+    }
+    #gate .log .p { color: #1793d1; font-weight: 700; }
+    #gate .log .g { color: #22ff88; }
+    #gate .log .r { color: #ff2244; }
+    #gate .log .q { color: #f9fafb; font-weight: 700; font-size: 1.15em; }
+    #gate .cur { display: inline-block; width: 0.6em; background: #22ff88; animation: cursorBlink 0.8s steps(2, start) infinite; }
+    #gate .choices { display: flex; gap: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    #gate .choices.show { opacity: 1; pointer-events: auto; }
+    #gate .choices button {
+      font: 700 15px ui-monospace, monospace;
+      letter-spacing: 0.12em;
+      padding: 12px 28px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    #gate .yes { color: #000; background: #22ff88; border: 1px solid #22ff88; box-shadow: 0 0 22px rgba(34, 255, 136, 0.55); }
+    #gate .yes:hover, #gate .yes:focus-visible { box-shadow: 0 0 34px #22ff88; outline: none; }
+    #gate .no { color: #ff2244; background: transparent; border: 1px solid #ff2244; }
+    #gate .no:hover, #gate .no:focus-visible { background: rgba(255, 34, 68, 0.12); outline: none; }
+    #gate .hint { font-size: 12px; color: #6b7280; }
+    #gate.opening .stage { opacity: 0; }
+    #gate.opening .seam { transform: scaleY(1); }
+    #gate.split .half.l { transform: translateX(-101%); }
+    #gate.split .half.r { transform: translateX(101%); }
+    #gate.split .seam { opacity: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      #gate .half, #gate .seam { transition: none; }
+      #gate.split { opacity: 0; transition: opacity 0.3s; }
+      #gate .face { animation: none; }
     }
 
     /* FASTFETCH BLOCK */
@@ -962,6 +1033,130 @@
   </style>
 </head>
 <body>
+  <div id="gate" role="dialog" aria-modal="true" aria-label="Intro">
+    <div class="half l"></div>
+    <div class="half r"></div>
+    <div class="seam"></div>
+    <div class="stage">
+<pre class="face" aria-hidden="true">
+              ___..------..___
+          _.-'                '-._
+        .'    .-''''''''''-.      '.
+       /    .'              '.      \
+      /    /    __      __    \      \
+     |    |    /  \    /  \    |      |
+     |    |   | <span class="eye">()</span> |  | <span class="eye">()</span> |   |      |
+     |    |    \__/    \__/    |      |
+     |    |        /\          |      |
+      \    \      /__\        /      /
+       \    '.   ______     .'      /
+        '.    '-.______.-'       .'
+     _.--'-._                _.-'--._
+   .'   0101 '--..______..--' 1010   '.
+  /   1 0 1 1 0 0 1 0 1 1 0 1 0 0 1    \
+</pre>
+      <div class="log" id="gate-log"></div>
+      <div class="choices" id="gate-choices">
+        <button class="yes" id="gate-yes" type="button">[ YES ]</button>
+        <button class="no" id="gate-no" type="button">[ NO ]</button>
+      </div>
+      <div class="hint">press Y / N</div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const gate = document.getElementById("gate");
+      let seen = false;
+      try { seen = sessionStorage.getItem("gate") === "1" && !/[?&]intro/.test(location.search); } catch (e) {}
+      if (seen) { gate.remove(); return; }
+      document.documentElement.classList.add("gate-open");
+
+      const log = document.getElementById("gate-log");
+      const choices = document.getElementById("gate-choices");
+      const yes = document.getElementById("gate-yes");
+      const no = document.getElementById("gate-no");
+      const fast = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let noCount = 0, busy = true, opened = false;
+
+      const intro = [
+        ['<span class="p">guest@unknown:~$</span> ', 'ssh guest@goran.sec'],
+        ['', 'Connecting to goran.sec (10.13.37.1)...'],
+        ['', '[<span class="g"> OK </span>] Encrypted channel established (chacha20-poly1305)'],
+        ['', '[<span class="g"> OK </span>] Firewall handshake accepted'],
+        ['<span class="p">guest@goran.sec:~$</span> ', './whoami.sh'],
+        ['', '<span class="q">&gt; are you ready to learn who i am? [Y/n]</span>']
+      ];
+
+      function line(prefix, text, typed, done) {
+        const d = document.createElement("div");
+        log.appendChild(d);
+        if (!typed || fast) { d.innerHTML = prefix + text; return setTimeout(done, fast ? 60 : 260); }
+        let i = 0;
+        (function tick() {
+          d.innerHTML = prefix + text.slice(0, i) + '<span class="cur">&nbsp;</span>';
+          if (i++ < text.length) return setTimeout(tick, 38);
+          d.innerHTML = prefix + text;
+          setTimeout(done, 280);
+        })();
+      }
+
+      function play(lines, then) {
+        let n = 0;
+        (function next() {
+          if (n >= lines.length) return then && then();
+          const [pre, txt] = lines[n++];
+          line(pre, txt, pre !== "", next);
+        })();
+      }
+
+      function ask() {
+        busy = false;
+        choices.classList.add("show");
+        yes.focus({ preventScroll: true });
+      }
+
+      function open() {
+        if (busy || opened) return;
+        opened = busy = true;
+        choices.classList.remove("show");
+        play([['', '[<span class="g"> ACCESS GRANTED </span>] decrypting profile...']], () => {
+          try { sessionStorage.setItem("gate", "1"); } catch (e) {}
+          gate.classList.add("opening");
+          setTimeout(() => gate.classList.add("split"), fast ? 0 : 380);
+          setTimeout(() => {
+            document.documentElement.classList.remove("gate-open");
+            gate.remove();
+          }, fast ? 350 : 1400);
+        });
+      }
+
+      function refuse() {
+        if (busy) return;
+        busy = true;
+        choices.classList.remove("show");
+        noCount++;
+        const replies = noCount === 1
+          ? [['', '<span class="r">&gt; wrong answer.</span>'], ['', '<span class="q">&gt; let me ask again: are you ready? [Y/n]</span>']]
+          : [['', '<span class="r">&gt; access override detected.</span> you\'re coming in anyway 😈']];
+        play(replies, () => {
+          if (noCount === 1) return ask();
+          busy = false;
+          open();
+        });
+      }
+
+      yes.addEventListener("click", open);
+      no.addEventListener("click", refuse);
+      window.addEventListener("keydown", (e) => {
+        if (!document.getElementById("gate")) return;
+        const k = e.key.toLowerCase();
+        if (k === "y") open();
+        else if (k === "n" || k === "escape") refuse();
+      });
+
+      play(intro, ask);
+    })();
+  </script>
   <div class="page-bg"></div>
   <canvas id="matrix-rain" aria-hidden="true"></canvas>
   <div class="cyber-overlay"></div>
@@ -1414,61 +1609,6 @@
     }
 
     typeLoop();
-
-    // Arch boot screen (once per session, skippable)
-    (function () {
-      let seen = false;
-      try { seen = sessionStorage.getItem("booted") === "1"; } catch (e) {}
-      if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      try { sessionStorage.setItem("booted", "1"); } catch (e) {}
-
-      const boot = document.createElement("div");
-      boot.id = "boot";
-      boot.setAttribute("aria-hidden", "true");
-      document.body.appendChild(boot);
-      const lines = [
-        ':: running early hook [udev]',
-        ':: running hook [encrypt]',
-        'A password is required to access the <span class="arch">cryptroot</span> volume:',
-        'Enter passphrase for /dev/nvme0n1p2: ********',
-        '[<span class="ok">  OK  </span>] Reached target <b>Local Encrypted Volumes</b>.',
-        '[<span class="ok">  OK  </span>] Started <b>Journal Service</b>.',
-        '[<span class="ok">  OK  </span>] Started <b>nftables firewall</b>.',
-        '[<span class="ok">  OK  </span>] Started <b>WireGuard tunnel wg0</b>.',
-        '[<span class="ok">  OK  </span>] Started <b>Intrusion Detection (suricata)</b>.',
-        '[<span class="ok">  OK  </span>] Loaded <b>NERC CIP compliance policies</b>.',
-        '[<span class="ok">  OK  </span>] Mounted <b>/home/goran</b>.',
-        '[<span class="ok">  OK  </span>] Reached target <b>Graphical Interface</b>.',
-        '',
-        '<span class="arch">Arch Linux</span> 6.x-hardened (tty1)',
-        '',
-        'archlinux login: goran',
-        'Password: ',
-        'Last login: from 10.0.0.1 — access granted.'
-      ];
-      const skip = document.createElement("div");
-      skip.className = "skip";
-      skip.textContent = "click or press any key to skip";
-      boot.appendChild(skip);
-
-      let i = 0, timer;
-      function finish() {
-        clearTimeout(timer);
-        boot.classList.add("done");
-        setTimeout(() => boot.remove(), 400);
-        window.removeEventListener("keydown", finish);
-      }
-      function step() {
-        if (i >= lines.length) { timer = setTimeout(finish, 350); return; }
-        const d = document.createElement("div");
-        d.innerHTML = lines[i++] || "&nbsp;";
-        boot.insertBefore(d, skip);
-        timer = setTimeout(step, i < 4 ? 160 : 70);
-      }
-      boot.addEventListener("click", finish);
-      window.addEventListener("keydown", finish);
-      step();
-    })();
 
     // Interactive shell
     (function () {
