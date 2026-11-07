@@ -215,6 +215,60 @@
     #gate .no { color: #ff2244; background: transparent; border: 1px solid #ff2244; }
     #gate .no:hover, #gate .no:focus-visible { background: rgba(255, 34, 68, 0.12); outline: none; }
     #gate .hint { font-size: 12px; color: #6b7280; }
+    #gate .hacked {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 24px 16px;
+      text-align: center;
+      background: #000;
+      cursor: pointer;
+      transition: opacity 0.2s ease-out;
+      animation: hackedFlash 0.6s steps(2, end) 2;
+    }
+    #gate .hacked[hidden] { display: none; }
+    #gate .hacked h2 {
+      position: relative;
+      margin: 0;
+      color: #ff2244;
+      font: 900 clamp(30px, 7vw, 84px)/1.05 "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px #ff2244, 0 0 40px rgba(255, 34, 68, 0.6);
+      animation: hackedGlitch 1.4s infinite steps(1, end);
+    }
+    #gate .hacked .hlog {
+      width: min(560px, 100%);
+      text-align: left;
+      font-size: clamp(12px, 1.6vw, 14px);
+      line-height: 1.7;
+      color: #d1d5db;
+      min-height: 8.5em;
+    }
+    #gate .hacked .g { color: #22ff88; }
+    #gate .hacked .r { color: #ff2244; }
+    #gate .hacked .w { color: #f9fafb; font-weight: 700; }
+    #gate .hacked .cont { font-size: 13px; color: #6b7280; opacity: 0; transition: opacity 0.4s; }
+    #gate .hacked .cont.show { opacity: 1; animation: cursorBlink 1.2s steps(2, start) infinite; }
+    @keyframes hackedFlash {
+      0% { background: #000; }
+      50% { background: #3b0008; }
+    }
+    @keyframes hackedGlitch {
+      0%, 88%, 100% { transform: none; }
+      89% { transform: translate(-4px, 1px) skewX(-8deg); color: #22ff88; }
+      91% { transform: translate(4px, -2px); }
+      93% { transform: none; color: #ff2244; }
+      95% { transform: translateX(-2px) skewX(6deg); }
+    }
+    #gate.opening .hacked { opacity: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      #gate .hacked, #gate .hacked h2 { animation: none; }
+    }
     #gate.opening .stage { opacity: 0; }
     #gate.opening .seam { transform: scaleY(1); }
     #gate.split .half.l { transform: translateX(-101%); }
@@ -1035,6 +1089,11 @@
     <div class="half r"></div>
     <div class="seam"></div>
     <div class="boot" id="gate-boot" aria-hidden="true"></div>
+    <div class="hacked" id="gate-hacked" hidden>
+      <h2>You've just<br />been hacked</h2>
+      <div class="hlog" id="hacked-log"></div>
+      <div class="cont" id="hacked-cont">[ press any key or click to continue ]</div>
+    </div>
     <div class="stage" hidden>
 <pre class="face" aria-hidden="true">
               ___..------..___
@@ -1081,7 +1140,7 @@
       const yes = document.getElementById("gate-yes");
       const no = document.getElementById("gate-no");
       const fast = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let noCount = 0, busy = true, opened = false, booting = true, bootTimer;
+      let busy = true, opened = false, booting = true, bootTimer;
 
       // ---------- phase 1: Linux boot ----------
       const OK = '[<span class="g">  OK  </span>] ';
@@ -1178,34 +1237,57 @@
         yes.focus({ preventScroll: true });
       }
 
-      function open() {
-        if (busy || opened) return;
+      function reveal() {
+        if (opened) return;
         opened = busy = true;
-        choices.classList.remove("show");
-        play([['', '[<span class="g"> ACCESS GRANTED </span>] decrypting profile...']], () => {
-          try { sessionStorage.setItem("gate", "1"); } catch (e) {}
-          gate.classList.add("opening");
-          setTimeout(() => gate.classList.add("split"), fast ? 0 : 380);
-          setTimeout(() => {
-            document.documentElement.classList.remove("gate-open");
-            gate.remove();
-          }, fast ? 350 : 1400);
-        });
+        try { sessionStorage.setItem("gate", "1"); } catch (e) {}
+        gate.classList.add("opening");
+        setTimeout(() => gate.classList.add("split"), fast ? 0 : 380);
+        setTimeout(() => {
+          document.documentElement.classList.remove("gate-open");
+          gate.remove();
+        }, fast ? 350 : 1400);
       }
 
-      function refuse() {
-        if (busy) return;
+      function open() {
+        if (busy || opened) return;
         busy = true;
         choices.classList.remove("show");
-        noCount++;
-        const replies = noCount === 1
-          ? [['', '<span class="r">&gt; wrong answer.</span>'], ['', '<span class="q">&gt; let me ask again: Would you like to uncover my identity? [Y/n]</span>']]
-          : [['', '<span class="r">&gt; access override detected.</span> you\'re coming in anyway 😈']];
-        play(replies, () => {
-          if (noCount === 1) return ask();
-          busy = false;
-          open();
-        });
+        play([['', '[<span class="g"> ACCESS GRANTED </span>] decrypting profile...']], reveal);
+      }
+
+      // "NO" -> black screen: you've just been hacked
+      let hackedReady = false;
+      function refuse() {
+        if (busy || opened) return;
+        busy = true;
+        choices.classList.remove("show");
+        stage.hidden = true;
+        const hacked = document.getElementById("gate-hacked");
+        const hlog = document.getElementById("hacked-log");
+        const cont = document.getElementById("hacked-cont");
+        hacked.hidden = false;
+        const lines = [
+          '&gt; bypassing your firewall ............ [<span class="g"> OK </span>]',
+          '&gt; disabling your "NO" button ......... [<span class="g"> OK </span>]',
+          '&gt; uploading your excuses to /dev/null  [<span class="g"> OK </span>]',
+          '&gt; installing curiosity.exe ........... [<span class="g"> OK </span>]',
+          '',
+          '<span class="w">just kidding 😈 — you can\'t say no to a hacker.</span>'
+        ];
+        let i = 0;
+        (function next() {
+          if (i >= lines.length) {
+            hackedReady = true;
+            cont.classList.add("show");
+            return;
+          }
+          const d = document.createElement("div");
+          d.innerHTML = lines[i++] || "&nbsp;";
+          hlog.appendChild(d);
+          setTimeout(next, fast ? 80 : 520);
+        })();
+        hacked.addEventListener("click", () => hackedReady && reveal());
       }
 
       yes.addEventListener("click", open);
@@ -1214,6 +1296,7 @@
       window.addEventListener("keydown", (e) => {
         if (!document.getElementById("gate")) return;
         if (booting) return endBoot(); // any key skips the boot
+        if (hackedReady) return reveal(); // any key leaves the "hacked" screen
         const k = e.key.toLowerCase();
         if (k === "y") open();
         else if (k === "n" || k === "escape") refuse();
