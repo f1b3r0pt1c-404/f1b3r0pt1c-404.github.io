@@ -53,17 +53,43 @@
       overflow: hidden;
     }
 
-    /* 1. CYBERPUNK WALLPAPER */
-    .page-bg::before {
-      content: "";
-      position: absolute;
+    /* 1. FLICKERING LINUX COMMANDS (replaces the old wallpaper) */
+    #cmd-bg {
+      position: fixed;
       inset: 0;
-      background-image: url("hacker-wallpaper.jpg"); /* put your image here */
-      background-size: cover;
-      background-position: center;
-      opacity: 0.22;
-      z-index: -3;
+      z-index: -2;
+      overflow: hidden;
+      pointer-events: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 10px 28px;
+      padding: 70px 24px 20px;
+      font: 12px/1.55 "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+      color: #22ff88;
     }
+    #cmd-bg pre {
+      margin: 0;
+      overflow: hidden;
+      white-space: pre;
+      opacity: 0.16;
+      text-shadow: 0 0 6px rgba(34, 255, 136, 0.5);
+      animation: cmdFlicker 5s infinite steps(1, end);
+    }
+    #cmd-bg pre:nth-child(3n) { color: #1793d1; text-shadow: 0 0 6px rgba(23, 147, 209, 0.6); }
+    #cmd-bg pre:nth-child(5n) { color: #9ca3af; text-shadow: none; }
+    #cmd-bg pre.flash { opacity: 0.45; }
+    @keyframes cmdFlicker {
+      0%, 100% { opacity: 0.16; }
+      42% { opacity: 0.06; }
+      43% { opacity: 0.26; }
+      44% { opacity: 0.12; }
+      78% { opacity: 0.22; }
+      79% { opacity: 0.08; }
+      80% { opacity: 0.18; }
+    }
+    @media (max-width: 900px) { #cmd-bg { grid-template-columns: repeat(2, 1fr); } }
+    @media (prefers-reduced-motion: reduce) { #cmd-bg pre { animation: none; } }
 
     /* 2. NEON GRID LINES (ANIMATED) */
     .page-bg::after {
@@ -177,6 +203,28 @@
       padding: 24px 16px;
       transition: opacity 0.2s ease-out;
     }
+    #gate .stage[hidden] { display: none; }
+    #gate .boot {
+      position: absolute;
+      inset: 0;
+      padding: 16px 18px;
+      overflow: hidden;
+      font-size: clamp(11px, 1.3vw, 13.5px);
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #c9d1d9;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    #gate .boot .g { color: #22c55e; }
+    #gate .boot .b { color: #1793d1; font-weight: 700; }
+    #gate .boot .w { color: #f9fafb; font-weight: 700; }
+    #gate .boot .d { color: #6b7280; }
+    #gate .boot b { color: #f9fafb; }
+
     #gate .face {
       margin: 0;
       color: #22ff88;
@@ -1037,7 +1085,8 @@
     <div class="half l"></div>
     <div class="half r"></div>
     <div class="seam"></div>
-    <div class="stage">
+    <div class="boot" id="gate-boot" aria-hidden="true"></div>
+    <div class="stage" hidden>
 <pre class="face" aria-hidden="true">
               ___..------..___
           _.-'                '-._
@@ -1066,23 +1115,88 @@
   <script>
     (function () {
       const gate = document.getElementById("gate");
+      const forced = /[?&]intro/.test(location.search);
       let seen = false;
-      try { seen = sessionStorage.getItem("gate") === "1" && !/[?&]intro/.test(location.search); } catch (e) {}
-      if (seen) { gate.remove(); return; }
+      try { seen = sessionStorage.getItem("gate") === "1"; } catch (e) {}
+      if (forced) {
+        // clean "?intro" out of the address bar
+        try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+      }
+      if (seen && !forced) { gate.remove(); return; }
       document.documentElement.classList.add("gate-open");
 
+      const bootEl = document.getElementById("gate-boot");
+      const stage = gate.querySelector(".stage");
       const log = document.getElementById("gate-log");
       const choices = document.getElementById("gate-choices");
       const yes = document.getElementById("gate-yes");
       const no = document.getElementById("gate-no");
       const fast = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let noCount = 0, busy = true, opened = false;
+      let noCount = 0, busy = true, opened = false, booting = true, bootTimer;
 
+      // ---------- phase 1: Linux boot ----------
+      const OK = '[<span class="g">  OK  </span>] ';
+      const t = (n) => '<span class="d">[' + n.toFixed(6).padStart(12, " ") + ']</span> ';
+      const bootLines = [
+        '<span class="w">GRUB loading.</span>',
+        '<span class="w">Booting `Arch Linux (linux-hardened)\'</span>',
+        '',
+        t(0.000000) + 'Linux version 6.x-hardened (linux-hardened@archlinux) (gcc) #1 SMP PREEMPT_DYNAMIC',
+        t(0.000000) + 'Command line: root=/dev/mapper/cryptroot rw quiet lsm=landlock,lockdown,yama,apparmor,bpf',
+        t(0.000000) + 'BIOS-provided physical RAM map: usable',
+        t(0.012447) + 'Secure boot enabled',
+        t(0.104318) + 'Kernel is locked down from EFI Secure Boot mode',
+        t(0.231004) + 'smpboot: CPU0: x86_64 — 16 cores online',
+        t(0.384551) + 'AppArmor: AppArmor initialized',
+        t(0.512990) + 'random: crng init done',
+        t(1.044213) + 'nvme nvme0: 16/0/0 default/read/poll queues',
+        ':: running early hook [<span class="b">udev</span>]',
+        ':: running hook [<span class="b">encrypt</span>]',
+        'Enter passphrase for /dev/nvme0n1p2: <span class="g">****************</span>',
+        '/dev/mapper/cryptroot: clean, 482113/30531584 files',
+        OK + 'Started <b>Journal Service</b>.',
+        OK + 'Started <b>Network Manager</b>.',
+        OK + 'Started <b>nftables firewall</b>.',
+        OK + 'Started <b>WireGuard via wg-quick(8) for wg0</b>.',
+        OK + 'Started <b>Suricata Intrusion Detection</b>.',
+        OK + 'Started <b>Fail2Ban Service</b>.',
+        OK + 'Started <b>Linux Audit Daemon</b>.',
+        OK + 'Loaded <b>NERC CIP compliance policies</b>.',
+        OK + 'Reached target <b>Multi-User System</b>.',
+        '',
+        '<span class="b">Arch Linux</span> 6.x-hardened (tty1)',
+        '',
+        'archlinux login: <span class="w">goran</span>',
+        'Password: ',
+        'Last login: ' + new Date().toUTCString() + ' on tty1',
+        '<span class="g">[ ACCESS GRANTED ]</span> loading profile...'
+      ];
+
+      function endBoot() {
+        if (!booting) return;
+        booting = false;
+        clearTimeout(bootTimer);
+        bootEl.remove();
+        stage.hidden = false;
+        play(intro, ask);
+      }
+
+      function bootStep(i) {
+        if (i >= bootLines.length) { bootTimer = setTimeout(endBoot, 700); return; }
+        const d = document.createElement("div");
+        d.innerHTML = bootLines[i] || "&nbsp;";
+        bootEl.appendChild(d);
+        bootEl.scrollTop = bootEl.scrollHeight;
+        // kernel lines fly by, password + login lines pause like a real boot
+        const slow = /passphrase|login:|Password/.test(bootLines[i]);
+        bootTimer = setTimeout(() => bootStep(i + 1), slow ? 450 : 55 + Math.random() * 60);
+      }
+
+      // ---------- phase 2: the question ----------
       const intro = [
         ['<span class="p">guest@unknown:~$</span> ', 'ssh guest@goran.sec'],
         ['', 'Connecting to goran.sec (10.13.37.1)...'],
         ['', '[<span class="g"> OK </span>] Encrypted channel established (chacha20-poly1305)'],
-        ['', '[<span class="g"> OK </span>] Firewall handshake accepted'],
         ['<span class="p">guest@goran.sec:~$</span> ', './whoami.sh'],
         ['', '<span class="q">&gt; are you ready to learn who i am? [Y/n]</span>']
       ];
@@ -1147,29 +1261,33 @@
 
       yes.addEventListener("click", open);
       no.addEventListener("click", refuse);
+      bootEl.addEventListener("click", endBoot);
       window.addEventListener("keydown", (e) => {
         if (!document.getElementById("gate")) return;
+        if (booting) return endBoot(); // any key skips the boot
         const k = e.key.toLowerCase();
         if (k === "y") open();
         else if (k === "n" || k === "escape") refuse();
       });
 
-      play(intro, ask);
+      if (fast) endBoot(); else bootStep(0);
     })();
   </script>
   <div class="page-bg"></div>
+  <div id="cmd-bg" aria-hidden="true"></div>
   <canvas id="matrix-rain" aria-hidden="true"></canvas>
   <div class="cyber-overlay"></div>
   <div class="scanlines"></div>
 
   <header>
     <div class="nav-inner">
-      <div class="nav-brand">
+      <a class="nav-brand" href="index.html?intro" title="Home">
         <span class="nav-dot"></span>
         <span class="nav-prompt">goran@<b>archlinux</b>:~$ <span class="blink">_</span></span>
-      </div>
+      </a>
       <nav>
         <ul>
+          <li><a href="index.html?intro">Home</a></li>
           <li><a href="#shell">Shell</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="projects.html">Projects</a></li>
@@ -1733,6 +1851,64 @@
       document.getElementById("shell-box").addEventListener("click", () => input.focus({ preventScroll: true }));
 
       print('<span class="p">Arch Linux</span> 6.x-hardened — welcome, guest.\nLast login: ' + new Date().toUTCString() + '\nType <span class="g">help</span> to get started.\n');
+    })();
+
+    // Flickering Linux commands background
+    (function () {
+      const bg = document.getElementById("cmd-bg");
+      if (!bg) return;
+      const pool = [
+        "$ sudo pacman -Syu", "$ uname -a", "Linux archlinux 6.x-hardened x86_64 GNU/Linux",
+        "$ systemctl status sshd", "● sshd.service - OpenSSH Daemon", "   Active: active (running)",
+        "$ ss -tulpn", "tcp  LISTEN 0 128 0.0.0.0:22", "tcp  LISTEN 0 511 0.0.0.0:443",
+        "$ nft list ruleset", "table inet filter {", "  chain input { policy drop; }", "}",
+        "$ journalctl -xe -u suricata", "[ALERT] ET SCAN Nmap -sS detected", "[BLOCK] 185.220.101.4 -> drop",
+        "$ sudo tcpdump -i wg0 port 443", "listening on wg0, link-type RAW", "IP 10.13.37.1.443 > 10.0.0.7: Flags [P.]",
+        "$ nmap -sV -p- 10.13.37.0/24", "PORT    STATE  SERVICE", "22/tcp  open   ssh", "443/tcp open   https",
+        "$ grep 'Failed password' /var/log/auth.log | wc -l", "0",
+        "$ fail2ban-client status sshd", "Currently banned: 3",
+        "$ wg show", "interface: wg0", "  latest handshake: 4 seconds ago",
+        "$ sha256sum firmware.bin", "9f2c1e7a0b4d...e81c  firmware.bin",
+        "$ gpg --verify release.sig", "gpg: Good signature from \"goran\"",
+        "$ openssl s_client -connect goran.sec:443", "Verify return code: 0 (ok)",
+        "$ find / -perm -4000 -type f 2>/dev/null", "/usr/bin/sudo", "/usr/bin/passwd",
+        "$ auditctl -l", "-w /etc/shadow -p wa -k identity",
+        "$ lynis audit system", "Hardening index : 92 [##################  ]",
+        "$ ps aux --sort=-%cpu | head", "root  1  0.0  0.1  systemd",
+        "$ dmesg | tail", "[  4.21] wireguard: WireGuard 1.0.0 loaded",
+        "$ chmod 600 ~/.ssh/id_ed25519", "$ ssh -i ~/.ssh/id_ed25519 goran@10.13.37.1",
+        "$ dig +short goran.sec", "10.13.37.1", "$ whoami", "goran",
+        "$ cat /etc/os-release | head -1", "NAME=\"Arch Linux\"",
+        "0x7f3a 4889 e548 83ec 2048 8b05 ...", "0x7f3b 0101 1100 1010 0111 1001 ...",
+        "$ aide --check", "AIDE found NO differences.", "$ nerc-cip --audit CIP-007", "[PASS] R2 security patch mgmt",
+        "$ clear"
+      ];
+      const pick = () => {
+        const start = Math.floor(Math.random() * pool.length);
+        const n = 6 + Math.floor(Math.random() * 6);
+        const out = [];
+        for (let i = 0; i < n; i++) out.push(pool[(start + i) % pool.length]);
+        return out.join("\n");
+      };
+      const count = window.innerWidth < 900 ? 8 : 16;
+      const blocks = [];
+      for (let i = 0; i < count; i++) {
+        const pre = document.createElement("pre");
+        pre.textContent = pick();
+        pre.style.animationDelay = (-Math.random() * 5).toFixed(2) + "s";
+        pre.style.animationDuration = (4 + Math.random() * 4).toFixed(2) + "s";
+        bg.appendChild(pre);
+        blocks.push(pre);
+      }
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      // every ~0.9s one block "reruns" with new commands and flashes bright
+      setInterval(() => {
+        if (document.hidden) return;
+        const b = blocks[Math.floor(Math.random() * blocks.length)];
+        b.textContent = pick();
+        b.classList.add("flash");
+        setTimeout(() => b.classList.remove("flash"), 140);
+      }, 900);
     })();
 
     // Matrix code rain
