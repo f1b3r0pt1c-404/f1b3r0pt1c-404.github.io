@@ -248,8 +248,9 @@
       pointer-events: none;
       background: #ff2244;
       opacity: 0;
-      animation: hackedStrobe 0.7s steps(1, end) 1;
     }
+    #gate .hacked.fr::after { opacity: 0.92; background: #ff2244; }
+    #gate .hacked.fw::after { opacity: 0.85; background: #fff; }
     #gate .hacked .warn {
       position: absolute;
       left: 0; right: 0;
@@ -308,14 +309,6 @@
       z-index: 1;
     }
     #gate .hacked .cont.show { opacity: 1; }
-    @keyframes hackedStrobe {
-      0% { opacity: 0.95; background: #ff2244; }
-      15% { opacity: 0; }
-      30% { opacity: 0.9; background: #fff; }
-      45% { opacity: 0; }
-      60% { opacity: 0.8; background: #ff2244; }
-      75%, 100% { opacity: 0; }
-    }
     @keyframes hackedShake {
       0%, 100% { transform: none; }
       10% { transform: translate(-12px, 6px); }
@@ -344,7 +337,7 @@
       93% { transform: none; color: #fff; }
     }
     @media (prefers-reduced-motion: reduce) {
-      #gate .hacked, #gate .hacked h2, #gate .hacked::after, #gate .hacked .warn { animation: none; }
+      #gate .hacked, #gate .hacked h2, #gate .hacked .warn { animation: none; }
     }
     #gate.opening .hacked { opacity: 0; }
     #gate.opening .stage { opacity: 0; }
@@ -1357,6 +1350,14 @@
         const hlog = document.getElementById("hacked-log");
         const cont = document.getElementById("hacked-cont");
         hacked.hidden = false;
+        if (!fast) {
+          // strobe: red / white / red flashes
+          ["fr", "", "fw", "", "fr", ""].forEach((c, k) =>
+            setTimeout(() => {
+              hacked.classList.remove("fr", "fw");
+              if (c) hacked.classList.add(c);
+            }, k * 110));
+        }
         const lines = [
           '&gt; bypassing your firewall ............ [<span class="g"> OK </span>]',
           '&gt; disabling your "NO" button ......... [<span class="g"> OK </span>]',
