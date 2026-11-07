@@ -1147,7 +1147,7 @@
         ['', 'Connecting to goran.sec (10.13.37.1)...'],
         ['', '[<span class="g"> OK </span>] Encrypted channel established (chacha20-poly1305)'],
         ['<span class="p">guest@goran.sec:~$</span> ', './whoami.sh'],
-        ['', '<span class="q">&gt; are you ready to learn who i am? [Y/n]</span>']
+        ['', '<span class="q">&gt; Would you like to uncover my identity? [Y/n]</span>']
       ];
 
       function line(prefix, text, typed, done) {
@@ -1199,7 +1199,7 @@
         choices.classList.remove("show");
         noCount++;
         const replies = noCount === 1
-          ? [['', '<span class="r">&gt; wrong answer.</span>'], ['', '<span class="q">&gt; let me ask again: are you ready? [Y/n]</span>']]
+          ? [['', '<span class="r">&gt; wrong answer.</span>'], ['', '<span class="q">&gt; let me ask again: Would you like to uncover my identity? [Y/n]</span>']]
           : [['', '<span class="r">&gt; access override detected.</span> you\'re coming in anyway 😈']];
         play(replies, () => {
           if (noCount === 1) return ask();
