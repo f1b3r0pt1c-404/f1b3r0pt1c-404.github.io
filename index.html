@@ -295,20 +295,6 @@
     #gate .hacked .g { color: #22ff88; font-weight: 700; }
     #gate .hacked .r { color: #ff2244; }
     #gate .hacked .w { color: #fff; font-weight: 700; }
-    #gate .hacked .cont {
-      font-size: 15px;
-      font-weight: 700;
-      color: #000;
-      background: #22ff88;
-      padding: 8px 18px;
-      border-radius: 4px;
-      box-shadow: 0 0 24px #22ff88;
-      opacity: 0;
-      transition: opacity 0.4s;
-      position: relative;
-      z-index: 1;
-    }
-    #gate .hacked .cont.show { opacity: 1; }
     @keyframes hackedShake {
       0%, 100% { transform: none; }
       10% { transform: translate(-12px, 6px); }
@@ -340,6 +326,60 @@
       #gate .hacked, #gate .hacked h2, #gate .hacked .warn { animation: none; }
     }
     #gate.opening .hacked { opacity: 0; }
+    #gate .hchoices { position: relative; z-index: 1; }
+    #gate .hacked.crt-off { animation: crtOff 0.65s ease-in forwards; }
+    @keyframes crtOff {
+      0% { transform: none; filter: brightness(1); }
+      40% { transform: scale(1, 0.005); filter: brightness(4); }
+      100% { transform: scale(0, 0.005); filter: brightness(8); opacity: 0; }
+    }
+    #gate .wipe {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      padding: 24px 16px;
+      cursor: default;
+    }
+    #gate .wipe[hidden], #gate .wipe [hidden] { display: none; }
+    #gate .wlog {
+      width: min(720px, 100%);
+      font-size: clamp(13px, 1.9vw, 17px);
+      line-height: 1.9;
+      color: #22ff88;
+      text-shadow: 0 0 6px rgba(34, 255, 136, 0.45);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    #gate .wlog:empty { display: none; }
+    #gate .wg { color: #22ff88; font-weight: 700; }
+    #gate .wr { color: #ff2244; font-weight: 700; }
+    #gate .wbig {
+      color: #ff2244;
+      font: 900 clamp(26px, 5.4vw, 76px)/1.15 "JetBrains Mono", ui-monospace, monospace;
+      text-align: center;
+      text-shadow: 0 0 14px #ff2244, 0 0 50px rgba(255, 34, 68, 0.7);
+    }
+    #gate .wcur {
+      display: inline-block;
+      width: 0.55em;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+      animation: cursorBlink 0.8s steps(2, start) infinite;
+    }
+    #gate .wend {
+      text-align: center;
+      color: #d1d5db;
+      font-size: clamp(14px, 1.8vw, 17px);
+      line-height: 2;
+      cursor: pointer;
+    }
+    #gate .wend span { color: #22ff88; animation: cursorBlink 1.4s steps(2, start) infinite; }
+    #gate.opening .wipe { opacity: 0; transition: opacity 0.2s; }
     #gate.opening .stage { opacity: 0; }
     #gate.opening .seam { transform: scaleY(1); }
     #gate.split .half.l { transform: translateX(-101%); }
@@ -1174,8 +1214,16 @@
 </pre>
       <h2>You've just<br />been hacked</h2>
       <div class="hlog" id="hacked-log"></div>
-      <div class="cont" id="hacked-cont">[ press any key or click to continue ]</div>
+      <div class="choices hchoices" id="hacked-choices">
+        <button class="yes" id="hacked-yes" type="button">[ YES ]</button>
+        <button class="no" id="hacked-no" type="button">[ NO ]</button>
+      </div>
       <div class="warn bottom"><span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span></div>
+    </div>
+    <div class="wipe" id="gate-wipe" hidden>
+      <div class="wlog" id="wipe-log"></div>
+      <div class="wbig" id="wipe-big" hidden></div>
+      <div class="wend" id="wipe-end" hidden>just kidding 😈 — welcome to my profile.<br /><span>[ press any key or click to continue ]</span></div>
     </div>
     <div class="stage" hidden>
 <pre class="face" aria-hidden="true">
@@ -1339,57 +1387,139 @@
         play([['', '[<span class="g"> ACCESS GRANTED </span>] decrypting profile...']], reveal);
       }
 
-      // "NO" -> black screen: you've just been hacked
-      let hackedReady = false;
+      // ---------- "NO" handling ----------
+      // 1st NO -> a joke, then the question again
+      // 2nd NO -> red "hacked" warning screen + last-chance question
+      // 3rd NO -> everything erased, black screen, slow worm install, "You've just been hacked."
+      const hacked = document.getElementById("gate-hacked");
+      const wipeEl = document.getElementById("gate-wipe");
+      let state = "ask"; // ask | hacked | lastChance | wipe | done
+      let joked = false;
+      const wait = (ms) => new Promise((r) => setTimeout(r, fast ? Math.min(ms, 120) : ms));
+
       function refuse() {
-        if (busy || opened) return;
+        if (opened) return;
+        if (state === "ask" && !busy) return joked ? hackedScreen() : joke();
+        if (state === "lastChance") return wipe();
+      }
+
+      function joke() {
+        joked = true;
+        busy = true;
+        choices.classList.remove("show");
+        play([
+          ['', '<span class="r">&gt; wrong answer.</span>'],
+          ['', '&gt; the [ NO ] button is just for decoration. it doesn\'t do anything. 🙂'],
+          ['', '<span class="q">&gt; let me ask again: Would you like to uncover my identity? [Y/n]</span>']
+        ], ask);
+      }
+
+      async function hackedScreen() {
+        state = "hacked";
         busy = true;
         choices.classList.remove("show");
         stage.hidden = true;
-        const hacked = document.getElementById("gate-hacked");
-        const hlog = document.getElementById("hacked-log");
-        const cont = document.getElementById("hacked-cont");
         hacked.hidden = false;
         if (!fast) {
-          // strobe: red / white / red flashes
           ["fr", "", "fw", "", "fr", ""].forEach((c, k) =>
             setTimeout(() => {
               hacked.classList.remove("fr", "fw");
               if (c) hacked.classList.add(c);
             }, k * 110));
         }
+        const hlog = document.getElementById("hacked-log");
         const lines = [
           '&gt; bypassing your firewall ............ [<span class="g"> OK </span>]',
           '&gt; disabling your "NO" button ......... [<span class="g"> OK </span>]',
           '&gt; uploading your excuses to /dev/null  [<span class="g"> OK </span>]',
           '&gt; installing curiosity.exe ........... [<span class="g"> OK </span>]',
           '',
-          '<span class="w">just kidding 😈 — you can\'t say no to a hacker.</span>'
+          '<span class="w">&gt; last chance. Would you like to uncover my identity? [Y/n]</span>'
         ];
-        let i = 0;
-        (function next() {
-          if (i >= lines.length) {
-            hackedReady = true;
-            cont.classList.add("show");
-            return;
-          }
+        for (const l of lines) {
           const d = document.createElement("div");
-          d.innerHTML = lines[i++] || "&nbsp;";
+          d.innerHTML = l || "&nbsp;";
           hlog.appendChild(d);
-          setTimeout(next, fast ? 80 : 520);
-        })();
-        hacked.addEventListener("click", () => hackedReady && reveal());
+          await wait(520);
+        }
+        document.getElementById("hacked-choices").classList.add("show");
+        document.getElementById("hacked-yes").focus({ preventScroll: true });
+        state = "lastChance";
+      }
+
+      async function wipe() {
+        state = "wipe";
+        // 1. erase everything: the red screen collapses like an old CRT turning off
+        document.getElementById("hacked-choices").classList.remove("show");
+        hacked.classList.add("crt-off");
+        await wait(700);
+        hacked.hidden = true;
+        wipeEl.hidden = false;
+        await wait(1200); // pure black, let it sink in
+
+        const wlog = document.getElementById("wipe-log");
+        const say = async (html, pause) => {
+          const d = document.createElement("div");
+          d.innerHTML = html;
+          wlog.appendChild(d);
+          await wait(pause);
+          return d;
+        };
+        const type = async (el, text, speed) => {
+          for (let i = 1; i <= text.length; i++) {
+            el.innerHTML = text.slice(0, i) + '<span class="wcur">&nbsp;</span>';
+            await wait(speed);
+          }
+          el.textContent = text;
+        };
+
+        // 2. install the worm — slowly
+        const cmd = await say("", 0);
+        await type(cmd, "root@goran.sec:~# ./install_worm.sh --target guest", 70);
+        await wait(700);
+        await say('[<span class="wr">*</span>] connecting to guest machine ............', 900);
+        await say('[<span class="wg">+</span>] connection established', 900);
+        await say('[<span class="wr">*</span>] installing worm.exe', 500);
+
+        const bar = await say("", 0);
+        for (let p = 0; p <= 100; p += 4) {
+          const filled = Math.round(p / 4);
+          bar.innerHTML = '    [<span class="wg">' + "█".repeat(filled) + '</span>' + "░".repeat(25 - filled) + '] ' + p + "%";
+          await wait(180);
+        }
+        await wait(500);
+        await say('[<span class="wg">+</span>] worm.exe installed', 900);
+        await say('[<span class="wg">+</span>] replicating ........... 1 → 2 → 4 → 8 → 16 hosts', 1100);
+        await say('[<span class="wg">+</span>] taking over webcam ..... <span class="wr">just kidding</span>', 1100);
+        await say('[<span class="wg">+</span>] covering tracks ........ done', 1400);
+
+        // 3. clear, then the message — slow
+        wlog.innerHTML = "";
+        await wait(1200);
+        const big = document.getElementById("wipe-big");
+        big.hidden = false;
+        await type(big, "You've just been hacked.", 140);
+        big.innerHTML = big.textContent + '<span class="wcur">&nbsp;</span>';
+        await wait(2500);
+
+        const end = document.getElementById("wipe-end");
+        end.hidden = false;
+        state = "done";
       }
 
       yes.addEventListener("click", open);
       no.addEventListener("click", refuse);
+      document.getElementById("hacked-yes").addEventListener("click", () => state === "lastChance" && reveal());
+      document.getElementById("hacked-no").addEventListener("click", refuse);
+      wipeEl.addEventListener("click", () => state === "done" && reveal());
       bootEl.addEventListener("click", endBoot);
       window.addEventListener("keydown", (e) => {
         if (!document.getElementById("gate")) return;
         if (booting) return endBoot(); // any key skips the boot
-        if (hackedReady) return reveal(); // any key leaves the "hacked" screen
+        if (state === "done") return reveal(); // any key leaves the black screen
+        if (state === "hacked" || state === "wipe") return; // let it play
         const k = e.key.toLowerCase();
-        if (k === "y") open();
+        if (k === "y") state === "lastChance" ? reveal() : open();
         else if (k === "n" || k === "escape") refuse();
       });
 
