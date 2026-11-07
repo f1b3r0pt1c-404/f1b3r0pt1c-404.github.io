@@ -137,6 +137,119 @@
     .term-out strong { color: var(--accent); }
     .term-ok { color: #22ff88; font-weight: 700; }
 
+    /* ARCH BOOT SCREEN */
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: #000;
+      color: #d1d5db;
+      font: 13px/1.45 "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+      padding: 18px 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: opacity 0.35s ease-out;
+    }
+    #boot.done { opacity: 0; pointer-events: none; }
+    #boot .ok { color: #22c55e; }
+    #boot .arch { color: #1793d1; font-weight: 700; }
+    #boot .skip {
+      position: absolute; right: 16px; bottom: 14px;
+      color: #6b7280; font-size: 12px;
+    }
+
+    /* FASTFETCH BLOCK */
+    .fetch {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-top: 6px;
+    }
+    .fetch pre {
+      color: #1793d1;
+      font: 700 0.72rem/1.25 ui-monospace, monospace;
+      margin: 0;
+      text-shadow: 0 0 8px rgba(23, 147, 209, 0.6);
+    }
+    .fetch-info { font-size: 0.74rem; line-height: 1.5; min-width: 0; }
+    .fetch-info b { color: #1793d1; font-weight: 700; }
+    .fetch-info .fetch-title { color: #22ff88; font-weight: 700; }
+    .fetch-colors { display: flex; gap: 0; margin-top: 4px; }
+    .fetch-colors i { width: 16px; height: 10px; display: block; }
+
+    /* INTERACTIVE SHELL */
+    .shell {
+      background: #000;
+      border: 1px solid rgba(23, 147, 209, 0.45);
+      border-radius: 14px;
+      box-shadow: 0 0 30px rgba(23, 147, 209, 0.15), var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+    .shell-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px;
+      background: #0b1220;
+      border-bottom: 1px solid rgba(23, 147, 209, 0.3);
+      font: 0.75rem ui-monospace, monospace;
+      color: var(--text-muted);
+    }
+    .shell-out {
+      height: 320px;
+      overflow-y: auto;
+      padding: 12px 14px 4px;
+      font: 0.82rem/1.55 "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+      color: #d1d5db;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .shell-out .p, .shell-line .p { color: #1793d1; font-weight: 700; }
+    .shell-out .g { color: #22ff88; }
+    .shell-out .r { color: #f87171; }
+    .shell-out .y { color: #facc15; }
+    .shell-out .c { color: var(--accent); }
+    .shell-out a { color: var(--accent); text-decoration: underline; }
+    .shell-line {
+      display: flex; gap: 8px; align-items: center;
+      padding: 4px 14px 12px;
+      font: 0.82rem ui-monospace, monospace;
+    }
+    .shell-line input {
+      flex: 1; min-width: 0;
+      background: transparent; border: 0; outline: 0;
+      color: #f9fafb; font: inherit; caret-color: #22ff88;
+    }
+    .shell-hint { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; position: relative; z-index: 1; }
+    .shell-hint code { color: #22ff88; }
+
+    /* TERMINAL-STYLE SECTION BADGES */
+    .section-title span.badge {
+      font-family: ui-monospace, monospace;
+      text-transform: lowercase;
+      letter-spacing: 0.04em;
+      color: #22ff88;
+    }
+    .section-title span.badge::before { content: "~/"; color: #1793d1; }
+    .section-title span.badge::after { content: " $"; color: var(--text-muted); }
+
+    @media (max-width: 640px) {
+      .nav-inner { flex-wrap: wrap; row-gap: 8px; padding: 10px 16px; }
+      nav { width: 100%; }
+      nav ul { flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; }
+      .shell-out { height: 260px; font-size: 0.76rem; }
+    }
+
+    /* PROMPT-STYLE NAV BRAND */
+    .nav-prompt {
+      font-family: ui-monospace, monospace;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      color: #22ff88;
+    }
+    .nav-prompt b { color: #1793d1; }
+    .nav-prompt .blink { animation: cursorBlink 0.8s steps(2, start) infinite; color: #f9fafb; }
+
     /* CRT SCANLINE OVERLAY */
     .scanlines {
       position: fixed;
@@ -858,10 +971,11 @@
     <div class="nav-inner">
       <div class="nav-brand">
         <span class="nav-dot"></span>
-        <span>GORAN MIDOROVIC // SEC_OPS</span>
+        <span class="nav-prompt">goran@<b>archlinux</b>:~$ <span class="blink">_</span></span>
       </div>
       <nav>
         <ul>
+          <li><a href="#shell">Shell</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="projects.html">Projects</a></li>
           <li><a href="#experience">Experience</a></li>
@@ -919,20 +1033,36 @@
       <aside class="hero-card terminal-card" aria-label="Profile summary">
         <div class="hero-card-header">
           <div class="term-dots"><i></i><i></i><i></i></div>
-          <div>root@sec-ops:~</div>
+          <div>goran@archlinux: ~ — zsh</div>
           <div class="status-pill">
             <span></span> SECURE
           </div>
         </div>
         <div class="term-body">
-          <div><span class="term-prompt">root@sec-ops:~#</span> whoami</div>
-          <div class="term-out">goran.midorovic</div>
-          <div><span class="term-prompt">root@sec-ops:~#</span> cat /etc/role</div>
-          <div class="term-out">Senior Cybersecurity Engineer @ <strong>NextEra Energy, Inc.</strong></div>
-          <div><span class="term-prompt">root@sec-ops:~#</span> ./access --status</div>
+          <div><span class="term-prompt">goran@archlinux:~$</span> fastfetch</div>
+          <div class="fetch">
+<pre aria-hidden="true">       /\
+      /  \
+     /\   \
+    /      \
+   /   ,,   \
+  /   |  |  -\
+ /_-''    ''-_\</pre>
+            <div class="fetch-info">
+              <div class="fetch-title">goran@archlinux</div>
+              <div><b>OS:</b> Arch Linux x86_64</div>
+              <div><b>WM:</b> Hyprland</div>
+              <div><b>Shell:</b> zsh</div>
+              <div><b>Role:</b> Sr. Cybersecurity Eng</div>
+              <div><b>Org:</b> <strong>NextEra Energy</strong></div>
+              <div><b>Uptime:</b> 10+ yrs in IT &amp; security</div>
+              <div class="fetch-colors"><i style="background:#000"></i><i style="background:#ef4444"></i><i style="background:#22c55e"></i><i style="background:#eab308"></i><i style="background:#1793d1"></i><i style="background:#d946ef"></i><i style="background:#06b6d4"></i><i style="background:#e5e7eb"></i></div>
+            </div>
+          </div>
+          <div><span class="term-prompt">goran@archlinux:~$</span> sudo ./access --status</div>
           <div class="term-out"><span class="term-ok">[GRANTED]</span> NERC CIP access</div>
           <div class="term-out"><span class="term-ok">[GRANTED]</span> Unescorted nuclear facility access</div>
-          <div><span class="term-prompt">root@sec-ops:~#</span> nmap -sV goran --top-skills</div>
+          <div><span class="term-prompt">goran@archlinux:~$</span> nmap -sV goran --top-skills</div>
         </div>
 
         <div class="hero-card-grid">
@@ -961,6 +1091,25 @@
           <code>sudo harden --infra --monitor --respond</code>
         </div>
       </aside>
+    </section>
+
+    <!-- INTERACTIVE SHELL -->
+    <section id="shell">
+      <h2 class="section-title glitch-heading" data-text="Remote Shell">
+        <span class="badge">shell</span> Remote Shell
+      </h2>
+      <p class="shell-hint">You've got a session. Type <code>help</code> to see what you can run.</p>
+      <div class="shell" id="shell-box">
+        <div class="shell-bar">
+          <div class="term-dots"><i></i><i></i><i></i></div>
+          <span>guest@archlinux: ~ — ssh goran.sec</span>
+        </div>
+        <div class="shell-out" id="shell-out" aria-live="polite"></div>
+        <label class="shell-line">
+          <span class="p">guest@archlinux:~$</span>
+          <input id="shell-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Shell command" />
+        </label>
+      </div>
     </section>
 
     <!-- SKILLS -->
@@ -1215,7 +1364,7 @@
     </section>
 
     <footer>
-      <span>© <span id="year"></span> Goran Midorovic · Senior Cybersecurity Engineer</span>
+      <span>© <span id="year"></span> Goran Midorovic · Senior Cybersecurity Engineer · <span style="color:#1793d1">I use Arch, btw.</span></span>
       <div class="footer-links">
         <a href="#top">Back to top ↑</a>
       </div>
@@ -1229,6 +1378,7 @@
     // Typing effect
     const typingEl = document.getElementById("typing-text");
     const phrases = [
+      "$ sudo pacman -Syu --noconfirm",
       "> establishing secure connection... OK",
       "> scanning perimeter... 0 threats detected",
       "> NERC CIP controls: ENFORCED",
@@ -1264,6 +1414,186 @@
     }
 
     typeLoop();
+
+    // Arch boot screen (once per session, skippable)
+    (function () {
+      let seen = false;
+      try { seen = sessionStorage.getItem("booted") === "1"; } catch (e) {}
+      if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      try { sessionStorage.setItem("booted", "1"); } catch (e) {}
+
+      const boot = document.createElement("div");
+      boot.id = "boot";
+      boot.setAttribute("aria-hidden", "true");
+      document.body.appendChild(boot);
+      const lines = [
+        ':: running early hook [udev]',
+        ':: running hook [encrypt]',
+        'A password is required to access the <span class="arch">cryptroot</span> volume:',
+        'Enter passphrase for /dev/nvme0n1p2: ********',
+        '[<span class="ok">  OK  </span>] Reached target <b>Local Encrypted Volumes</b>.',
+        '[<span class="ok">  OK  </span>] Started <b>Journal Service</b>.',
+        '[<span class="ok">  OK  </span>] Started <b>nftables firewall</b>.',
+        '[<span class="ok">  OK  </span>] Started <b>WireGuard tunnel wg0</b>.',
+        '[<span class="ok">  OK  </span>] Started <b>Intrusion Detection (suricata)</b>.',
+        '[<span class="ok">  OK  </span>] Loaded <b>NERC CIP compliance policies</b>.',
+        '[<span class="ok">  OK  </span>] Mounted <b>/home/goran</b>.',
+        '[<span class="ok">  OK  </span>] Reached target <b>Graphical Interface</b>.',
+        '',
+        '<span class="arch">Arch Linux</span> 6.x-hardened (tty1)',
+        '',
+        'archlinux login: goran',
+        'Password: ',
+        'Last login: from 10.0.0.1 — access granted.'
+      ];
+      const skip = document.createElement("div");
+      skip.className = "skip";
+      skip.textContent = "click or press any key to skip";
+      boot.appendChild(skip);
+
+      let i = 0, timer;
+      function finish() {
+        clearTimeout(timer);
+        boot.classList.add("done");
+        setTimeout(() => boot.remove(), 400);
+        window.removeEventListener("keydown", finish);
+      }
+      function step() {
+        if (i >= lines.length) { timer = setTimeout(finish, 350); return; }
+        const d = document.createElement("div");
+        d.innerHTML = lines[i++] || "&nbsp;";
+        boot.insertBefore(d, skip);
+        timer = setTimeout(step, i < 4 ? 160 : 70);
+      }
+      boot.addEventListener("click", finish);
+      window.addEventListener("keydown", finish);
+      step();
+    })();
+
+    // Interactive shell
+    (function () {
+      const out = document.getElementById("shell-out");
+      const input = document.getElementById("shell-in");
+      if (!out || !input) return;
+      const history = [];
+      let hIndex = 0;
+
+      function print(html, cls) {
+        const d = document.createElement("div");
+        if (cls) d.className = cls;
+        d.innerHTML = html;
+        out.appendChild(d);
+        out.scrollTop = out.scrollHeight;
+      }
+      function esc(t) {
+        const d = document.createElement("div");
+        d.textContent = t;
+        return d.innerHTML;
+      }
+      const txt = (sel) => [...document.querySelectorAll(sel)].map((e) => e.textContent.trim());
+
+      const files = ["about.txt", "experience.log", "skills.db", "certs/", "contact.gpg", "projects/"];
+      const cmds = {
+        help: () => print(
+          'available commands:\n' +
+          '  <span class="g">whoami</span>       who is this guy\n' +
+          '  <span class="g">fastfetch</span>    system info\n' +
+          '  <span class="g">ls</span>           list files\n' +
+          '  <span class="g">cat</span> &lt;file&gt;   read a file (about.txt, experience.log, skills.db, contact.gpg)\n' +
+          '  <span class="g">certs</span>        list certifications\n' +
+          '  <span class="g">projects</span>     open projects\n' +
+          '  <span class="g">nmap</span>         scan the target\n' +
+          '  <span class="g">pacman -Syu</span>  update the system\n' +
+          '  <span class="g">history</span>      command history\n' +
+          '  <span class="g">clear</span>        clear screen'),
+        whoami: () => print('goran — Senior Cybersecurity Engineer @ <span class="c">NextEra Energy</span>\nclearance: <span class="g">NERC CIP</span> · <span class="g">unescorted nuclear access</span>'),
+        fastfetch: () => print(
+          '<span class="p">       /\\        </span><span class="g">goran@archlinux</span>\n' +
+          '<span class="p">      /  \\       </span>---------------\n' +
+          '<span class="p">     /\\   \\      </span><span class="p">OS:</span> Arch Linux x86_64\n' +
+          '<span class="p">    /      \\     </span><span class="p">WM:</span> Hyprland\n' +
+          '<span class="p">   /   ,,   \\    </span><span class="p">Shell:</span> zsh\n' +
+          '<span class="p">  /   |  |  -\\   </span><span class="p">Role:</span> Sr. Cybersecurity Engineer\n' +
+          '<span class="p"> /_-\'\'    \'\'-_\\  </span><span class="p">Org:</span> NextEra Energy'),
+        ls: (a) => {
+          if (a[0] && a[0].startsWith("cert")) return cmds.certs();
+          print(files.map((f) => f.endsWith("/") ? '<span class="p">' + f + '</span>' : f).join("  "));
+        },
+        cat: (a) => {
+          const f = (a[0] || "").replace(/^\.\//, "");
+          if (!f) return print("cat: missing file operand");
+          if (f === "about.txt") return print(document.querySelector(".hero-subtitle").textContent.trim().replace(/\s+/g, " "));
+          if (f === "experience.log") {
+            const items = [...document.querySelectorAll("#experience .timeline-item")].map((el) => {
+              const q = (s) => (el.querySelector(s) || {}).textContent || "";
+              return '<span class="y">[' + q(".dates").trim() + ']</span> ' + q(".role").trim() + ' <span class="c">@ ' + q(".company").trim() + '</span>';
+            });
+            return print(items.join("\n"));
+          }
+          if (f === "skills.db") {
+            const labels = txt("#skills .skill-label");
+            const items = txt("#skills .skill-items");
+            return print(labels.map((l, i) => '<span class="g">' + l + '</span>\n  ' + (items[i] || "").replace(/\s+/g, " ")).join("\n"));
+          }
+          if (f === "contact.gpg") return print('-----BEGIN PGP MESSAGE-----\nhQEMA9x3...decrypting... <span class="g">done</span>\n-----END PGP MESSAGE-----\n\nemail: <a href="mailto:goran.midorovic@protonmail.com">goran.midorovic@protonmail.com</a>\nphone: <a href="tel:+17863279001">+1 (786) 327 9001</a>\nlocation: Miami, FL');
+          if (f.endsWith("/")) return print("cat: " + esc(f) + ": Is a directory");
+          print("cat: " + esc(f) + ": No such file or directory");
+        },
+        certs: () => print(txt(".cert-name").map((c) => '<span class="g">✔</span> ' + esc(c)).join("\n")),
+        projects: () => { print('opening <span class="c">projects.html</span>...'); setTimeout(() => (location.href = "projects.html"), 600); },
+        nmap: () => {
+          print('Starting Nmap 7.95 ( https://nmap.org )\nNmap scan report for goran.sec (10.13.37.1)\nPORT     STATE    SERVICE\n22/tcp   <span class="r">filtered</span> ssh\n443/tcp  <span class="g">open</span>     https  (resume)\n1337/tcp <span class="g">open</span>     cybersecurity\n\nNmap done: 1 IP address (1 host up). Target is <span class="y">well defended</span>.');
+        },
+        pacman: (a) => {
+          if (!a.join(" ").includes("-S")) return print("error: no operation specified (use -h for help)");
+          print(':: Synchronizing package databases...\n core is up to date\n extra is up to date\n:: Starting full system upgrade...\n there is nothing to do');
+        },
+        sudo: (a) => {
+          if (a.join(" ").includes("rm -rf")) return print('<span class="r">nice try.</span> 🙂');
+          print('[sudo] password for guest: \n<span class="r">guest is not in the sudoers file. This incident will be reported.</span>');
+        },
+        rm: () => print('<span class="r">rm: permission denied. nice try.</span>'),
+        history: () => print(history.map((h, i) => "  " + (i + 1) + "  " + esc(h)).join("\n") || ""),
+        clear: () => { out.innerHTML = ""; },
+        exit: () => print("there is no escape. type <span class=\"g\">help</span>."),
+        hack: () => print('<span class="g">access granted.</span> just kidding — hire me instead: <span class="g">cat contact.gpg</span>'),
+        neofetch: () => cmds.fastfetch(),
+        uname: () => print("Linux archlinux 6.x-hardened x86_64 GNU/Linux"),
+        pwd: () => print("/home/guest"),
+        id: () => print("uid=1000(guest) gid=1000(guest) groups=1000(guest)"),
+        echo: (a) => print(esc(a.join(" "))),
+        date: () => print(new Date().toString()),
+      };
+      cmds.vim = cmds.nano = () => print("you will never leave. try <span class=\"g\">cat</span> instead.");
+
+      function run(line) {
+        print('<span class="p">guest@archlinux:~$</span> ' + esc(line));
+        const parts = line.trim().split(/\s+/);
+        const cmd = (parts.shift() || "").toLowerCase();
+        if (!cmd) return;
+        history.push(line);
+        hIndex = history.length;
+        (cmds[cmd] || (() => print("zsh: command not found: " + esc(cmd))))(parts);
+      }
+
+      input.addEventListener("keydown", (e) => {
+        e.stopPropagation();
+        if (e.key === "Enter") { run(input.value); input.value = ""; }
+        else if (e.key === "ArrowUp") { if (hIndex > 0) input.value = history[--hIndex]; e.preventDefault(); }
+        else if (e.key === "ArrowDown") { hIndex = Math.min(history.length, hIndex + 1); input.value = history[hIndex] || ""; e.preventDefault(); }
+        else if (e.key === "Tab") {
+          e.preventDefault();
+          const [c, ...rest] = input.value.split(" ");
+          const pool = rest.length ? files : Object.keys(cmds);
+          const word = rest.length ? rest[rest.length - 1] : c;
+          const hit = pool.find((x) => x.startsWith(word));
+          if (hit) input.value = rest.length ? [c, ...rest.slice(0, -1), hit].join(" ") : hit + " ";
+        }
+      });
+      document.getElementById("shell-box").addEventListener("click", () => input.focus({ preventScroll: true }));
+
+      print('<span class="p">Arch Linux</span> 6.x-hardened — welcome, guest.\nLast login: ' + new Date().toUTCString() + '\nType <span class="g">help</span> to get started.\n');
+    })();
 
     // Matrix code rain
     (function () {
