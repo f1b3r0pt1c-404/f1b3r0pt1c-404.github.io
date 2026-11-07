@@ -49,7 +49,7 @@
       position: fixed;
       inset: 0;
       z-index: -3;
-      background: #030712;
+      background: #000;
       overflow: hidden;
     }
 
@@ -72,7 +72,7 @@
       margin: 0;
       overflow: hidden;
       white-space: pre;
-      opacity: 0.16;
+      opacity: 0.22;
       text-shadow: 0 0 6px rgba(34, 255, 136, 0.5);
       animation: cmdFlicker 5s infinite steps(1, end);
     }
@@ -80,67 +80,16 @@
     #cmd-bg pre:nth-child(5n) { color: #9ca3af; text-shadow: none; }
     #cmd-bg pre.flash { opacity: 0.45; }
     @keyframes cmdFlicker {
-      0%, 100% { opacity: 0.16; }
-      42% { opacity: 0.06; }
-      43% { opacity: 0.26; }
-      44% { opacity: 0.12; }
-      78% { opacity: 0.22; }
-      79% { opacity: 0.08; }
-      80% { opacity: 0.18; }
+      0%, 100% { opacity: 0.22; }
+      42% { opacity: 0.08; }
+      43% { opacity: 0.34; }
+      44% { opacity: 0.16; }
+      78% { opacity: 0.28; }
+      79% { opacity: 0.1; }
+      80% { opacity: 0.24; }
     }
     @media (max-width: 900px) { #cmd-bg { grid-template-columns: repeat(2, 1fr); } }
     @media (prefers-reduced-motion: reduce) { #cmd-bg pre { animation: none; } }
-
-    /* 2. NEON GRID LINES (ANIMATED) */
-    .page-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(rgba(0, 255, 255, 0.14) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.14) 1px, transparent 1px);
-      background-size: 60px 60px;
-      animation: gridMove 22s linear infinite;
-      z-index: -2;
-      opacity: 0.12;
-      will-change: transform;
-    }
-
-    @keyframes gridMove {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-60px); }
-    }
-
-    /* 3. HOLOGRAPHIC NEON GLOW OVERLAY */
-    .cyber-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.22), transparent 55%),
-        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.22), transparent 55%),
-        radial-gradient(circle at 50% 100%, rgba(255, 255, 0, 0.18), transparent 55%);
-      pointer-events: none;
-      opacity: 0.6;
-      will-change: transform;
-      animation: holoShift 16s ease-in-out infinite alternate;
-    }
-
-    @keyframes holoShift {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, -30px) scale(1.15); }
-    }
-
-    /* MATRIX CODE RAIN */
-    #matrix-rain {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      opacity: 0.18;
-      pointer-events: none;
-    }
 
     /* TERMINAL PROFILE CARD */
     .term-dots { display: flex; gap: 6px; }
@@ -1275,8 +1224,6 @@
   </script>
   <div class="page-bg"></div>
   <div id="cmd-bg" aria-hidden="true"></div>
-  <canvas id="matrix-rain" aria-hidden="true"></canvas>
-  <div class="cyber-overlay"></div>
   <div class="scanlines"></div>
 
   <header>
@@ -1911,55 +1858,6 @@
       }, 900);
     })();
 
-    // Matrix code rain
-    (function () {
-      const canvas = document.getElementById("matrix-rain");
-      if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const ctx = canvas.getContext("2d", { alpha: false });
-      const chars = "01アイウエオカキクケコサシスセソ<>/{}[]#$%&*NERCCIP";
-      const size = 16;
-      let drops = [];
-
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        drops = Array(Math.ceil(canvas.width / size)).fill(0).map(() => Math.random() * -50);
-      }
-
-      function draw() {
-        ctx.fillStyle = "rgba(2, 6, 23, 0.08)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#22ff88";
-        ctx.font = size + "px monospace";
-        drops.forEach((y, i) => {
-          ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * size, y * size);
-          if (y * size > canvas.height && Math.random() > 0.975) drops[i] = 0;
-          drops[i] = y + 1;
-        });
-      }
-
-      let last = 0;
-      let visible = true;
-      const hero = document.querySelector(".hero");
-      if (hero && "IntersectionObserver" in window) {
-        new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
-      }
-
-      function loop(t) {
-        requestAnimationFrame(loop);
-        if (!visible || document.hidden || t - last < 66) return;
-        last = t;
-        draw();
-      }
-
-      resize();
-      let resizeTimer;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(resize, 200);
-      });
-      requestAnimationFrame(loop);
-    })();
   </script>
 </body>
 </html>
