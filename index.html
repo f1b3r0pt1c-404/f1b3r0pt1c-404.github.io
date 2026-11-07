@@ -222,53 +222,131 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 22px;
-      padding: 24px 16px;
+      gap: 18px;
+      padding: 64px 16px;
       text-align: center;
-      background: #000;
       cursor: pointer;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #4a0010 0%, #120004 45%, #000 80%);
       transition: opacity 0.2s ease-out;
-      animation: hackedFlash 0.6s steps(2, end) 2;
+      animation: hackedShake 0.5s linear 1, hackedPulse 1.6s ease-in-out 0.6s infinite;
     }
     #gate .hacked[hidden] { display: none; }
+    /* red CRT lines */
+    #gate .hacked::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, rgba(255, 34, 68, 0.12) 0 1px, transparent 1px 4px);
+    }
+    /* strobe flash on entry */
+    #gate .hacked::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: #ff2244;
+      opacity: 0;
+      animation: hackedStrobe 0.7s steps(1, end) 1;
+    }
+    #gate .hacked .warn {
+      position: absolute;
+      left: 0; right: 0;
+      padding: 8px 0;
+      font: 900 clamp(12px, 1.8vw, 16px) ui-monospace, monospace;
+      letter-spacing: 0.3em;
+      color: #000;
+      background: repeating-linear-gradient(-45deg, #ff2244 0 18px, #ffcc00 18px 36px);
+      white-space: nowrap;
+      overflow: hidden;
+      animation: warnBlink 0.9s steps(2, start) infinite;
+    }
+    #gate .hacked .warn span { background: #000; color: #ff2244; padding: 2px 14px; }
+    #gate .hacked .warn.top { top: 0; }
+    #gate .hacked .warn.bottom { bottom: 0; }
+    #gate .hacked .skull {
+      margin: 0;
+      color: #ff2244;
+      font: 700 clamp(7px, 1.25vw, 13px)/1.05 ui-monospace, monospace;
+      text-shadow: 0 0 8px #ff2244, 0 0 22px rgba(255, 34, 68, 0.7);
+    }
     #gate .hacked h2 {
       position: relative;
       margin: 0;
-      color: #ff2244;
-      font: 900 clamp(30px, 7vw, 84px)/1.05 "JetBrains Mono", ui-monospace, monospace;
-      letter-spacing: 0.04em;
+      color: #fff;
+      font: 900 clamp(38px, 9vw, 120px)/1 "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      text-shadow: 0 0 12px #ff2244, 0 0 40px rgba(255, 34, 68, 0.6);
-      animation: hackedGlitch 1.4s infinite steps(1, end);
+      text-shadow: -4px 0 #ff2244, 4px 0 #00f5ff, 0 0 30px #ff2244, 0 0 70px rgba(255, 34, 68, 0.8);
+      animation: hackedGlitch 1.1s infinite steps(1, end);
     }
     #gate .hacked .hlog {
-      width: min(560px, 100%);
+      width: min(640px, 100%);
       text-align: left;
-      font-size: clamp(12px, 1.6vw, 14px);
+      font-size: clamp(13px, 1.9vw, 17px);
       line-height: 1.7;
-      color: #d1d5db;
+      color: #f3f4f6;
       min-height: 8.5em;
+      position: relative;
+      z-index: 1;
     }
-    #gate .hacked .g { color: #22ff88; }
+    #gate .hacked .g { color: #22ff88; font-weight: 700; }
     #gate .hacked .r { color: #ff2244; }
-    #gate .hacked .w { color: #f9fafb; font-weight: 700; }
-    #gate .hacked .cont { font-size: 13px; color: #6b7280; opacity: 0; transition: opacity 0.4s; }
-    #gate .hacked .cont.show { opacity: 1; animation: cursorBlink 1.2s steps(2, start) infinite; }
-    @keyframes hackedFlash {
-      0% { background: #000; }
-      50% { background: #3b0008; }
+    #gate .hacked .w { color: #fff; font-weight: 700; }
+    #gate .hacked .cont {
+      font-size: 15px;
+      font-weight: 700;
+      color: #000;
+      background: #22ff88;
+      padding: 8px 18px;
+      border-radius: 4px;
+      box-shadow: 0 0 24px #22ff88;
+      opacity: 0;
+      transition: opacity 0.4s;
+      position: relative;
+      z-index: 1;
+    }
+    #gate .hacked .cont.show { opacity: 1; }
+    @keyframes hackedStrobe {
+      0% { opacity: 0.95; background: #ff2244; }
+      15% { opacity: 0; }
+      30% { opacity: 0.9; background: #fff; }
+      45% { opacity: 0; }
+      60% { opacity: 0.8; background: #ff2244; }
+      75%, 100% { opacity: 0; }
+    }
+    @keyframes hackedShake {
+      0%, 100% { transform: none; }
+      10% { transform: translate(-12px, 6px); }
+      20% { transform: translate(10px, -8px); }
+      30% { transform: translate(-8px, -4px); }
+      40% { transform: translate(8px, 8px); }
+      50% { transform: translate(-6px, 2px); }
+      60% { transform: translate(5px, -5px); }
+      70% { transform: translate(-3px, 3px); }
+      80% { transform: translate(2px, -2px); }
+    }
+    @keyframes hackedPulse {
+      0%, 100% { box-shadow: inset 0 0 120px rgba(255, 34, 68, 0.35); }
+      50% { box-shadow: inset 0 0 260px rgba(255, 34, 68, 0.75); }
+    }
+    @keyframes warnBlink {
+      0% { opacity: 1; }
+      100% { opacity: 0.55; }
     }
     @keyframes hackedGlitch {
-      0%, 88%, 100% { transform: none; }
-      89% { transform: translate(-4px, 1px) skewX(-8deg); color: #22ff88; }
-      91% { transform: translate(4px, -2px); }
-      93% { transform: none; color: #ff2244; }
-      95% { transform: translateX(-2px) skewX(6deg); }
+      0%, 84%, 100% { transform: none; }
+      85% { transform: translate(-8px, 2px) skewX(-12deg); }
+      87% { transform: translate(8px, -3px); color: #ff2244; }
+      89% { transform: none; }
+      91% { transform: translateX(-4px) skewX(10deg); color: #00f5ff; }
+      93% { transform: none; color: #fff; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #gate .hacked, #gate .hacked h2, #gate .hacked::after, #gate .hacked .warn { animation: none; }
     }
     #gate.opening .hacked { opacity: 0; }
-    @media (prefers-reduced-motion: reduce) {
-      #gate .hacked, #gate .hacked h2 { animation: none; }
-    }
     #gate.opening .stage { opacity: 0; }
     #gate.opening .seam { transform: scaleY(1); }
     #gate.split .half.l { transform: translateX(-101%); }
@@ -1090,9 +1168,21 @@
     <div class="seam"></div>
     <div class="boot" id="gate-boot" aria-hidden="true"></div>
     <div class="hacked" id="gate-hacked" hidden>
+      <div class="warn top"><span>⚠ SYSTEM COMPROMISED ⚠</span> &nbsp; <span>⚠ SYSTEM COMPROMISED ⚠</span> &nbsp; <span>⚠ SYSTEM COMPROMISED ⚠</span> &nbsp; <span>⚠ SYSTEM COMPROMISED ⚠</span></div>
+<pre class="skull" aria-hidden="true">
+     .-""""""""-.
+    /            \
+   |   _      _   |
+   |  (_)    (_)  |
+   |      /\      |
+    \    ''''    /
+     '-.,____,.-'
+      |_|_|_|_|
+</pre>
       <h2>You've just<br />been hacked</h2>
       <div class="hlog" id="hacked-log"></div>
       <div class="cont" id="hacked-cont">[ press any key or click to continue ]</div>
+      <div class="warn bottom"><span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span> &nbsp; <span>⚠ ACCESS DENIED ⚠</span></div>
     </div>
     <div class="stage" hidden>
 <pre class="face" aria-hidden="true">
