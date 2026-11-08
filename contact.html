@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact // Goran Midorovic</title>
+  <meta name="description" content="Open a secure channel with Goran Midorovic — Senior Cybersecurity Engineer at NextEra Energy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #050816;
+      --accent: #00f5ff;
+      --green: #22ff88;
+      --red: #ff2244;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: rgba(148, 163, 184, 0.28);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(0, 245, 255, 0.08), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(255, 34, 68, 0.07), transparent 55%),
+        var(--bg);
+      color: var(--text-main);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 56px;
+    }
+    a { color: var(--accent); }
+    .topbar {
+      width: min(680px, 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .topbar a { text-decoration: none; }
+    .topbar a:hover { color: var(--green); }
+    .window {
+      width: min(680px, 100%);
+      background: rgba(5, 8, 22, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #0b1020;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .dots { display: flex; gap: 6px; }
+    .dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+    .dots i:nth-child(1) { background: #ff5f56; }
+    .dots i:nth-child(2) { background: #ffbd2e; }
+    .dots i:nth-child(3) { background: #27c93f; }
+    .body { padding: 22px; }
+    .prompt { color: var(--green); }
+    .intro { font-size: 13px; line-height: 1.7; color: var(--text-muted); margin: 0 0 20px; }
+    .intro .green { color: var(--green); }
+    label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin: 16px 0 6px;
+    }
+    label::before { content: "> "; color: var(--text-muted); }
+    input, textarea {
+      width: 100%;
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 11px 13px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(34, 255, 136, 0.15);
+    }
+    textarea { resize: vertical; min-height: 130px; }
+    .send {
+      margin-top: 22px;
+      width: 100%;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #021008;
+      background: var(--green);
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 13px;
+      cursor: pointer;
+      box-shadow: 0 0 22px rgba(34, 255, 136, 0.4);
+      transition: box-shadow 0.15s, transform 0.05s;
+    }
+    .send:hover { box-shadow: 0 0 34px rgba(34, 255, 136, 0.7); }
+    .send:active { transform: translateY(1px); }
+    .alt {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .alt a { color: var(--green); text-decoration: none; }
+    .alt a:hover { text-decoration: underline; }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--border);
+    }
+    .pill {
+      font-size: 13px;
+      padding: 8px 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(0, 245, 255, 0.05);
+    }
+    .pill a { text-decoration: none; }
+    .ok {
+      display: none;
+      margin: 0 0 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--green);
+      border-radius: 10px;
+      background: rgba(34, 255, 136, 0.1);
+      color: var(--green);
+      font-size: 14px;
+    }
+    .ok.show { display: block; }
+    footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html">&larr; cd ~/home</a>
+    <span>goran@archlinux:~/contact</span>
+  </div>
+
+  <div class="window">
+    <div class="bar">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span>guest@goran.sec: ~/contact — secure channel</span>
+    </div>
+    <div class="body">
+      <div class="ok" id="ok">
+        <span class="prompt">[ TRANSMITTED ]</span> message sent. I'll get back to you soon. 🙂
+      </div>
+
+      <p class="intro">
+        <span class="prompt">goran@archlinux:~$</span> ./open_channel.sh<br />
+        <span class="green">[ OK ]</span> encrypted channel ready.<br />
+        Drop a message below — cybersecurity, NERC CIP, critical-infrastructure work, or just to say hi.
+      </p>
+
+      <form action="https://formsubmit.co/goran.midorovic@protonmail.com" method="POST" id="contact-form">
+        <!-- FormSubmit settings -->
+        <input type="hidden" name="_subject" value="New message from your portfolio" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="true" />
+        <input type="hidden" name="_next" value="https://f1b3r0pt1c-404.github.io/contact.html?sent=1" />
+        <!-- honeypot: bots fill this, humans don't -->
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+        <label for="name">your name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Doe" required />
+
+        <label for="email">your email</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+
+        <label for="subject">subject</label>
+        <input type="text" id="subject" name="subject" placeholder="Let's talk security" />
+
+        <label for="message">message</label>
+        <textarea id="message" name="message" placeholder="Type your message..." required></textarea>
+
+        <button class="send" type="submit">✉ TRANSMIT MESSAGE</button>
+      </form>
+
+      <p class="alt">
+        prefer your own email app?
+        <a id="mailto-link" href="mailto:goran.midorovic@protonmail.com">open it here &rarr;</a>
+      </p>
+
+      <div class="pills">
+        <div class="pill">📧 <a href="mailto:goran.midorovic@protonmail.com">goran.midorovic@protonmail.com</a></div>
+        <div class="pill">📞 <a href="tel:+17863279001">+1 (786) 327 9001</a></div>
+        <div class="pill">📍 Miami, Florida, USA</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> Goran Midorovic · I use Arch, btw.</footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // show success banner when FormSubmit redirects back with ?sent=1
+    if (/[?&]sent=1/.test(location.search)) {
+      document.getElementById("ok").classList.add("show");
+      try { history.replaceState(null, "", location.pathname); } catch (e) {}
+      window.scrollTo(0, 0);
+    }
+
+    // keep the "open my email app" fallback in sync with what the visitor types
+    const form = document.getElementById("contact-form");
+    const mailto = document.getElementById("mailto-link");
+    function syncMailto() {
+      const subj = (form.subject.value || "Message from your portfolio").trim();
+      const body =
+        "From: " + (form.name.value || "").trim() +
+        " <" + (form.email.value || "").trim() + ">\n\n" +
+        (form.message.value || "").trim();
+      mailto.href = "mailto:goran.midorovic@protonmail.com" +
+        "?subject=" + encodeURIComponent(subj) +
+        "&body=" + encodeURIComponent(body);
+    }
+    form.addEventListener("input", syncMailto);
+    syncMailto();
+  </script>
+</body>
+</html>
