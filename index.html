@@ -111,6 +111,16 @@
     .term-out { color: var(--text-muted); padding-left: 2px; }
     .term-out strong { color: var(--accent); }
     .term-ok { color: #22ff88; font-weight: 700; }
+    .term-dim { color: #6b7280; }
+    .trace-out { margin: 4px 0 2px; }
+    .trace-row { display: flex; gap: 10px; align-items: baseline; }
+    .trace-k { color: #1793d1; min-width: 72px; }
+    .trace-k::after { content: " ....."; color: #374151; }
+    .trace-v { color: #e5e7eb; font-weight: 600; word-break: break-all; }
+    .trace-v.on { color: #22ff88; }
+    .trace-note { color: #6b7280; margin-top: 4px; font-size: 0.92em; }
+    @keyframes traceDots { 0%,20%{opacity:0.2} 50%{opacity:1} 100%{opacity:0.2} }
+    #trace-dots { animation: traceDots 1s steps(3) infinite; }
 
     /* INTRO GATE */
     html.gate-open, html.gate-open body { overflow: hidden; }
@@ -1626,6 +1636,15 @@
           <div><span class="term-prompt">goran@archlinux:~$</span> sudo ./access --status</div>
           <div class="term-out"><span class="term-ok">[GRANTED]</span> NERC CIP access</div>
           <div class="term-out"><span class="term-ok">[GRANTED]</span> Unescorted nuclear facility access</div>
+          <div><span class="term-prompt">goran@archlinux:~$</span> ./trace.sh --visitor</div>
+          <div class="term-out trace-out" id="trace-out">
+            <div><span class="term-dim">&gt; tracing connection</span><span id="trace-dots">...</span></div>
+            <div class="trace-row"><span class="trace-k">ip</span><span class="trace-v" id="trace-ip">—</span></div>
+            <div class="trace-row"><span class="trace-k">location</span><span class="trace-v" id="trace-loc">—</span></div>
+            <div class="trace-row"><span class="trace-k">isp</span><span class="trace-v" id="trace-isp">—</span></div>
+            <div class="trace-row"><span class="trace-k">browser</span><span class="trace-v" id="trace-ua">—</span></div>
+            <div class="trace-note" id="trace-note">// yep, i can see you — but this stays in your browser. nothing is saved or sent. 🙂</div>
+          </div>
           <div><span class="term-prompt">goran@archlinux:~$</span> nmap -sV goran --top-skills</div>
         </div>
 
@@ -2160,6 +2179,51 @@
         b.classList.add("flash");
         setTimeout(() => b.classList.remove("flash"), 140);
       }, 900);
+    })();
+
+    /* ---------- visitor trace (shown to the visitor, nothing stored or sent) ---------- */
+    (function () {
+      const set = (id, val, ok) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = val;
+        if (ok) el.classList.add("on");
+      };
+      // browser + OS, straight from the visitor's own user-agent
+      const ua = navigator.userAgent;
+      const browser = /Firefox\//.test(ua) ? "Firefox"
+        : /Edg\//.test(ua) ? "Edge"
+        : /OPR\//.test(ua) ? "Opera"
+        : /Chrome\//.test(ua) ? "Chrome"
+        : /Safari\//.test(ua) ? "Safari" : "Unknown";
+      const os = /Windows/.test(ua) ? "Windows"
+        : /Android/.test(ua) ? "Android"
+        : /iPhone|iPad|iPod/.test(ua) ? "iOS"
+        : /Mac OS X/.test(ua) ? "macOS"
+        : /Linux/.test(ua) ? "Linux" : "Unknown";
+      set("trace-ua", browser + " / " + os, true);
+
+      // ip + location from a free public API, resolved live in the browser
+      fetch("https://ipapi.co/json/")
+        .then((r) => r.ok ? r.json() : Promise.reject())
+        .then((d) => {
+          const dots = document.getElementById("trace-dots");
+          if (dots) dots.textContent = "";
+          const note = document.getElementById("trace-note");
+          const first = document.querySelector("#trace-out > div");
+          if (first) first.innerHTML = '<span class="term-ok">[DONE]</span> <span class="term-dim">connection traced</span>';
+          set("trace-ip", d.ip || "hidden", true);
+          const loc = [d.city, d.region, d.country_name].filter(Boolean).join(", ");
+          set("trace-loc", loc || "unknown", true);
+          set("trace-isp", d.org || d.asn || "unknown", true);
+        })
+        .catch(() => {
+          const dots = document.getElementById("trace-dots");
+          if (dots) dots.textContent = "";
+          set("trace-ip", "blocked (nice — you run a blocker)", false);
+          set("trace-loc", "unavailable", false);
+          set("trace-isp", "unavailable", false);
+        });
     })();
 
   </script>
